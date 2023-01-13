@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">neighborsis</string>
+    <string name="msg_token_fmt2">토큰 : %s</string>
+    <string name="noti_channel_id">100</string>
+    <string name="default_notification_channel_id">100100123</string>
+    <string name="default_notification_channel_name">testJun</string>
+</resources>
