@@ -6,32 +6,48 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
+import android.widget.ViewFlipper
+import com.example.neighborsis.databinding.ActivityMainBinding
 import com.example.neighborsis.util.PopupDialog
 import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseApp.initializeApp
-import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : AppCompatActivity() {
     var webView : WebView? = null
+    var webViewBtn : ImageView? = null
+    var settingBtn : ImageView? = null
+    var mViewFlipper : ViewFlipper? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        webView = findViewById(R.id.webView)
+        val binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
+        setContentView(binding.root)
+        webView = binding.webView
+        webViewBtn = binding.webViewBtn
+        settingBtn = binding.settingBtn
+        mViewFlipper = binding.viewFlipper
         webView?.apply {
             webViewClient = WebViewClient()
             settings.javaScriptEnabled = true
-
         }
 
         var fcm = FCMMessagingService()
 
         MobileAds.initialize(this)
         webView?.loadUrl("https://dunni.co.kr/")
+
+        webViewBtn?.setOnClickListener { it ->
+        mViewFlipper?.showNext()
+        }
+        settingBtn?.setOnClickListener { it ->
+            mViewFlipper?.showPrevious()
+        }
 
     }
 
