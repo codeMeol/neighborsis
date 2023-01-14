@@ -22,7 +22,7 @@
 
             <include
                 android:id="@+id/admin_push_layout"
-                layout="@layout/admin_push_layout"/>
+                layout="@layout/setting_layout"/>
 
 
 
