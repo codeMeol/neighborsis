@@ -1,51 +1,52 @@
 package com.example.neighborsis.adapter
-
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.example.neighborsis.databinding.SettingItemBinding
+import android.widget.BaseAdapter
+import android.widget.ImageView
+import android.widget.TextView
+import com.example.neighborsis.R
+
+
 import com.example.neighborsis.dataclass.SettingModel
 
-class SettingAdapter : ListAdapter<SettingModel, SettingAdapter.ViewHolder>(diffUtil) {
 
-    inner class ViewHolder(var binding: SettingItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: SettingModel) {
-            binding.apply {
+class SettingAdapter(private val settingModelList: ArrayList<SettingModel>) : BaseAdapter() {
 
-            }
+
+
+    override fun getCount(): Int {
+
+        return settingModelList.size
+    }
+
+    override fun getItem(position: Int): SettingModel = settingModelList[position]
+
+    override fun getItemId(position: Int): Long =position.toLong()
+
+    override fun getView(position: Int, view: View?, parent: ViewGroup?): View {
+        var convertView = view
+        val viewHolder=ViewHolder()
+        if (convertView == null) {
+            convertView = LayoutInflater.from(parent?.context).inflate(R.layout.setting_item, parent, false)
         }
+        val item: SettingModel = settingModelList[position]
+
+        viewHolder.settingExplanationIcon?.setImageDrawable(item.settingExplanationIcon)
+        viewHolder.settingExplanationText?.setText(item.settingExplanationText)
+        viewHolder.settingValueText?.setText(item.settingValueText)
+        viewHolder.settingValueRightIcon?.setImageDrawable(item.settingValueRightIcon)
+
+
+        return convertView!!
+
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            SettingItemBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
+    class ViewHolder {
+        var settingExplanationIcon: ImageView? =null
+        var settingExplanationText: TextView?=null
+        var settingValueText: TextView?=null
+        var settingValueRightIcon: ImageView?=null
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        // currentList: 해당 Adapter에 "submitList()"를 통해 삽입한 아이템 리스트
-        holder.bind(currentList[position])
-    }
-
-    companion object {
-        // diffUtil: currentList에 있는 각 아이템들을 비교하여 최신 상태를 유지하도록 한다.
-        val diffUtil = object : DiffUtil.ItemCallback<SettingModel>() {
-            override fun areItemsTheSame(oldItem: SettingModel, newItem: SettingModel): Boolean {
-
-                return false;
-            }
-
-            override fun areContentsTheSame(oldItem: SettingModel, newItem: SettingModel): Boolean {
-
-                return false
-            }
-        }
-    }
 }

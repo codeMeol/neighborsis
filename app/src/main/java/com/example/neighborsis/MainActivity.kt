@@ -1,19 +1,16 @@
 package com.example.neighborsis
 
-import android.R
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.neighborsis.adapter.SettingAdapter
 import com.example.neighborsis.databinding.ActivityMainBinding
-import com.example.neighborsis.databinding.AdminPushLayoutBinding
-import com.example.neighborsis.databinding.SettingItemBinding
 import com.example.neighborsis.dataclass.SettingModel
 import com.example.neighborsis.util.PopupDialog
 import com.google.android.gms.ads.MobileAds
@@ -24,7 +21,6 @@ class MainActivity : AppCompatActivity() {
     var webViewBtn: ImageView? = null
     var settingBtn: ImageView? = null
     var mViewFlipper: ViewFlipper? = null
-    val SettingItem = SettingItemActivity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,15 +30,16 @@ class MainActivity : AppCompatActivity() {
         webViewBtn = binding.webViewBtn
         settingBtn = binding.settingBtn
         mViewFlipper = binding.viewFlipper
+
         webView?.apply {
             webViewClient = WebViewClient()
             settings.javaScriptEnabled = true
         }
-        var mSettingAdapter : SettingAdapter = SettingAdapter()
-        var mView: AdminPushLayoutBinding = binding.adminPushLayout
-        var mItemList = mView.itemList
-        mItemList.adapter= SettingAdapter()
-        mSettingAdapter.submitList()
+        var mSettingAdapter = SettingAdapter(getSettingModelList())
+
+
+        val mSettingList = binding.adminPushLayout.findViewById<ListView>(R.id.item_list)
+        mSettingList.adapter=mSettingAdapter
 
 
         var fcm = FCMMessagingService()
@@ -88,19 +85,19 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         }
     }
-    private fun getProductItemList(): ArrayList<SettingModel> {
+
+    private fun getSettingModelList(): ArrayList<SettingModel> {
         var resultList = arrayListOf<SettingModel>()
+        var cnt =0
+        while(cnt++ <3) {
+        var id = getDrawable(R.drawable.setting_user_icon)
+        var thumbnail: String = "사용자 정보"
+        var title: String = "adminA123"
+        var price = getDrawable(R.drawable.right_btn)
 
-        var cnt = 0
-        //
-        while (cnt++ < 3) {
-            val id :ImageView =SettingItem.findViewById(R.id.)
-            val thumbnail : TextView =
-            val title : TextView =
-            val price : ImageView =
-
-            val settingItem = SettingModel(id, thumbnail!!, title, price)
-            resultList.add(settingItem)
+        val settingItem = SettingModel(id!!, thumbnail!!, title!!, price!!)
+        resultList.add(settingItem)
+        Log.d("준영테스트","$resultList")
         }
         return resultList
     }
