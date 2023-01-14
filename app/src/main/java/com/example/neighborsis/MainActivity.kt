@@ -18,10 +18,10 @@ import com.example.neighborsis.util.PopupDialog
 import com.google.android.gms.ads.MobileAds
 
 class MainActivity : AppCompatActivity() {
-    var webView : WebView? = null
-    var webViewBtn : ImageView? = null
-    var settingBtn : ImageView? = null
-    var mViewFlipper : ViewFlipper? = null
+    var webView: WebView? = null
+    var webViewBtn: ImageView? = null
+    var settingBtn: ImageView? = null
+    var mViewFlipper: ViewFlipper? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         webView?.loadUrl("https://dunni.co.kr/")
 
         webViewBtn?.setOnClickListener { it ->
-        mViewFlipper?.showNext()
+            mViewFlipper?.showNext()
         }
         settingBtn?.setOnClickListener { it ->
             mViewFlipper?.showPrevious()
@@ -54,9 +54,8 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (webView?.canGoBack()!!) {
             webView?.goBack()
-        }
-        else {
-            var CancelPopUp : PopupDialog = PopupDialog(this, finishApp = {finish()})
+        } else {
+            var CancelPopUp: PopupDialog = PopupDialog(this, finishApp = { finish() })
             CancelPopUp.show()
 
         }
@@ -64,18 +63,21 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        lateinit var message:String
-        Toast.makeText(this,"${message} = message ${requestCode} = resultcode ${data} = data" ,Toast.LENGTH_SHORT).show()
-        if(requestCode == Activity.RESULT_OK){
-           message= data?.getStringExtra("key1").toString()
-            Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
+        lateinit var message: String
+        Toast.makeText(
+            this,
+            "${message} = message ${requestCode} = resultcode ${data} = data",
+            Toast.LENGTH_SHORT
+        ).show()
+        if (requestCode == Activity.RESULT_OK) {
+            message = data?.getStringExtra("key1").toString()
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         }
 
-        if(message.equals("꺼주세요")){
+        if (message.equals("꺼주세요")) {
             finish()
-        }
-        else if(message.equals("돌아갔음")){
-            Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
+        } else if (message.equals("돌아갔음")) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         }
     }
 }
