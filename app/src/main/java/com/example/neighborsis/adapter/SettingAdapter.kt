@@ -1,4 +1,7 @@
 package com.example.neighborsis.adapter
+
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -6,6 +9,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.neighborsis.R
+import com.example.neighborsis.activity.AdminPushToFirebaseActivity
 
 
 import com.example.neighborsis.dataclass.SettingModel
@@ -25,6 +29,7 @@ class SettingAdapter(private val settingModelList: ArrayList<SettingModel>) : Ba
     override fun getItemId(position: Int): Long =position.toLong()
 
     override fun getView(position: Int, view: View?, parent: ViewGroup?): View {
+        Log.d("준영테스트","getview()")
         var convertView = view
         val viewHolder=ViewHolder()
         if (convertView == null) {

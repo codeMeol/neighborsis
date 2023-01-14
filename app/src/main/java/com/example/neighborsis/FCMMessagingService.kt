@@ -9,9 +9,8 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import androidx.work.impl.background.systemalarm.SystemAlarmService
+import com.example.neighborsis.activity.MainActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -35,7 +34,7 @@ class FCMMessagingService() : FirebaseMessagingService() {
             // Log and toast
             val msg = getString(R.string.msg_token_fmt2, token)
             Log.d(ContentValues.TAG, msg)
-            Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+
 
 
         })
@@ -56,7 +55,7 @@ class FCMMessagingService() : FirebaseMessagingService() {
             Log.d("준영테스트","알림 메시지, ${remoteMessage.notification!!.body}")
             val messagebody = remoteMessage.notification!!.body
             val messagetitle = remoteMessage.notification!!.title
-            val intent=Intent(this,MainActivity::class.java)
+            val intent=Intent(this, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             val pendingIntent=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT)
             val channelId = getString(R.string.default_notification_channel_id)

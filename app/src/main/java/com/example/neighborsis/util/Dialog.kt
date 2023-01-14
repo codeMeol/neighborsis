@@ -1,20 +1,13 @@
 package com.example.neighborsis.util
 
-import android.app.Activity
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
-import com.example.neighborsis.MainActivity
 import com.example.neighborsis.databinding.DialogLayoutBinding
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.admanager.AdManagerAdRequest
-import com.google.android.gms.ads.nativead.NativeAd
-import com.google.android.gms.ads.nativead.NativeAdOptions
 
 class PopupDialog(context: Context,val finishApp: ()->Unit) : Dialog(context) {
     private lateinit var binding: DialogLayoutBinding

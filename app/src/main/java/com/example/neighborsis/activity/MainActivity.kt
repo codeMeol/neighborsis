@@ -1,14 +1,18 @@
-package com.example.neighborsis
+package com.example.neighborsis.activity
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.*
+import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.app.AppCompatActivity
+import com.example.neighborsis.FCMMessagingService
+import com.example.neighborsis.R
 import com.example.neighborsis.adapter.SettingAdapter
 import com.example.neighborsis.databinding.ActivityMainBinding
 import com.example.neighborsis.dataclass.SettingModel
@@ -30,16 +34,25 @@ class MainActivity : AppCompatActivity() {
         webViewBtn = binding.webViewBtn
         settingBtn = binding.settingBtn
         mViewFlipper = binding.viewFlipper
-
+        var FLIPPERCOUNT = 0
         webView?.apply {
             webViewClient = WebViewClient()
             settings.javaScriptEnabled = true
         }
         var mSettingAdapter = SettingAdapter(getSettingModelList())
-
+        val mItemClickListener = OnItemClickListener { parent, view, position, l_position ->
+            // parent는 AdapterView의 속성의 모두 사용 할 수 있다.
+            val tv = parent.adapter.getItemId(position).toString()
+            if(tv.equals("2")){
+                val intent = Intent(this,AdminPushToFirebaseActivity::class.java)
+                this.startActivity(intent)
+            }
+            Toast.makeText(applicationContext, tv, Toast.LENGTH_SHORT).show()
+        }
 
         val mSettingList = binding.adminPushLayout.findViewById<ListView>(R.id.item_list)
-        mSettingList.adapter=mSettingAdapter
+        mSettingList.adapter = mSettingAdapter
+        mSettingList.setOnItemClickListener(mItemClickListener)
 
 
         var fcm = FCMMessagingService()
@@ -48,10 +61,16 @@ class MainActivity : AppCompatActivity() {
         webView?.loadUrl("https://dunni.co.kr/")
 
         webViewBtn?.setOnClickListener { it ->
-            mViewFlipper?.showNext()
+            if (FLIPPERCOUNT == 0) {
+                FLIPPERCOUNT += 1;
+                mViewFlipper?.showNext()
+            }
         }
         settingBtn?.setOnClickListener { it ->
-            mViewFlipper?.showPrevious()
+            if (FLIPPERCOUNT == 1) {
+                FLIPPERCOUNT -= 1;
+                mViewFlipper?.showPrevious()
+            }
         }
 
     }
@@ -88,16 +107,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun getSettingModelList(): ArrayList<SettingModel> {
         var resultList = arrayListOf<SettingModel>()
-        var cnt =0
-        while(cnt++ <3) {
-        var id = getDrawable(R.drawable.setting_user_icon)
-        var thumbnail: String = "사용자 정보"
-        var title: String = "adminA123"
-        var price = getDrawable(R.drawable.right_btn)
+        var thumbnail: String;
+        var cnt = 0
+        while (cnt++ < 3) {
+            var id = getDrawable(R.drawable.setting_user_icon)
+            if (cnt == 2) {
+                thumbnail = "개발자모드"
+            } else {
+                thumbnail = "사용자 정보"
+            }
+            var title: String = "adminA123"
+            var price = getDrawable(R.drawable.right_btn)
 
-        val settingItem = SettingModel(id!!, thumbnail!!, title!!, price!!)
-        resultList.add(settingItem)
-        Log.d("준영테스트","$resultList")
+            val settingItem = SettingModel(id!!, thumbnail!!, title!!, price!!)
+            resultList.add(settingItem)
+            Log.d("준영테스트", "$resultList")
         }
         return resultList
     }
