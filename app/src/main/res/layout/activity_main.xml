@@ -20,7 +20,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <include layout="@layout/admin_push_layout"/>
+            <include
+                android:id="@+id/admin_push_layout"
+                layout="@layout/admin_push_layout"/>
 
 
 

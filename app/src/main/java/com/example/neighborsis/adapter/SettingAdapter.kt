@@ -1,4 +1,4 @@
-package com.example.neighborsis.util
+package com.example.neighborsis.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -43,6 +43,7 @@ class SettingAdapter : ListAdapter<SettingModel, SettingAdapter.ViewHolder>(diff
             }
 
             override fun areContentsTheSame(oldItem: SettingModel, newItem: SettingModel): Boolean {
+
                 return false
             }
         }
