@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         settingBtn?.setOnClickListener { it ->
             if (FLIPPERCOUNT == 1) {
                 FLIPPERCOUNT -= 1;
-
+                mViewFlipper?.showPrevious()
             }
         }
 

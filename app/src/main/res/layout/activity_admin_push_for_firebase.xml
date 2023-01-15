@@ -7,13 +7,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="22sp"
-        android:text="sending push mail for developer"
-        tools:ignore="MissingConstraints"></TextView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="22sp"
+            android:text="sending push mail for developer"
+            tools:ignore="MissingConstraints" />
 
         <EditText
             android:id="@+id/push_for_firebase_body_edittext"
@@ -37,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:background="@color/Light_gray"
-            android:drawableRight="@drawable/sending_mail"
+            android:drawableEnd="@drawable/sending_mail"
             tools:ignore="SpeakableTextPresentCheck" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
