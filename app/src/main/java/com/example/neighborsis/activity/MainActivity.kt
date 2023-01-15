@@ -20,6 +20,7 @@ import com.example.neighborsis.util.PopupDialog
 import com.google.android.gms.ads.MobileAds
 
 
+
 class MainActivity : AppCompatActivity() {
     var webView: WebView? = null
     var webViewBtn: ImageView? = null
@@ -44,8 +45,9 @@ class MainActivity : AppCompatActivity() {
             // parent는 AdapterView의 속성의 모두 사용 할 수 있다.
             val tv = parent.adapter.getItemId(position).toString()
             if(tv.equals("2")){
-                val intent = Intent(this,AdminPushToFirebaseActivity::class.java)
-                this.startActivity(intent)
+                val intent =Intent(applicationContext, AdminPushForFirebaseActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+                    this.startActivity(intent)
             }
             Toast.makeText(applicationContext, tv, Toast.LENGTH_SHORT).show()
         }
@@ -69,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         settingBtn?.setOnClickListener { it ->
             if (FLIPPERCOUNT == 1) {
                 FLIPPERCOUNT -= 1;
-                mViewFlipper?.showPrevious()
+
             }
         }
 
