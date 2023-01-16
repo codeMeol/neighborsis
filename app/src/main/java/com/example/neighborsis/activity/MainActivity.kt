@@ -21,12 +21,13 @@ import com.google.android.gms.ads.MobileAds
 
 
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
     var webView: WebView? = null
     var webViewBtn: ImageView? = null
     var settingBtn: ImageView? = null
     var mViewFlipper: ViewFlipper? = null
-
+    var fcm = FCMMessagingService()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
@@ -54,29 +55,37 @@ class MainActivity : AppCompatActivity() {
 
         val mSettingList = binding.adminPushLayout.findViewById<ListView>(R.id.item_list)
         mSettingList.adapter = mSettingAdapter
-        mSettingList.setOnItemClickListener(mItemClickListener)
+        mSettingList.onItemClickListener = mItemClickListener
 
 
-        var fcm = FCMMessagingService()
+
 
         MobileAds.initialize(this)
         webView?.loadUrl("https://dunni.co.kr/")
 
         webViewBtn?.setOnClickListener { it ->
-            if (FLIPPERCOUNT == 0) {
-                FLIPPERCOUNT += 1;
-                mViewFlipper?.showNext()
+            if (FLIPPERCOUNT == 1) {
+                FLIPPERCOUNT -= 1
+                mViewFlipper?.showPrevious()
             }
         }
         settingBtn?.setOnClickListener { it ->
-            if (FLIPPERCOUNT == 1) {
-                FLIPPERCOUNT -= 1;
-                mViewFlipper?.showPrevious()
+            if (FLIPPERCOUNT == 0) {
+                FLIPPERCOUNT += 1
+                mViewFlipper?.showNext()
             }
         }
 
     }
 
+    override fun onResume() {
+        super.onResume()
+       var intentLinkURL = Intent().extras?.getString("linkURL")
+        if(fcm.url!=null){
+            Log.d("준영테스트","${fcm.url}")
+        }
+        Log.d("onResume","${intentLinkURL}")
+    }
     override fun onBackPressed() {
         if (webView?.canGoBack()!!) {
             webView?.goBack()
@@ -87,27 +96,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-           Log.d("준영테스트","${requestCode} = resultcode ${data} = data")
+           Log.d("준영테스트","${resultCode}= resultCode , ${requestCode} = requestCode , ${data} = data")
 
-//
-//        if (requestCode == Activity.RESULT_OK) {
-//            message = data?.getStringExtra("key1").toString()
-//            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-//        }
+
+
+
+           val message = data?.getStringExtra("linkUrl").toString()
+
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
+        }
 //
 //        if (message.equals("꺼주세요")) {
 //            finish()
 //        } else if (message.equals("돌아갔음")) {
 //            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 //        }
-    }
+
 
     private fun getSettingModelList(): ArrayList<SettingModel> {
         var resultList = arrayListOf<SettingModel>()
-        var thumbnail: String;
+        var thumbnail: String
         var cnt = 0
         while (cnt++ < 3) {
             var id = getDrawable(R.drawable.setting_user_icon)
@@ -119,7 +132,7 @@ class MainActivity : AppCompatActivity() {
             var title: String = "adminA123"
             var price = getDrawable(R.drawable.right_btn)
 
-            val settingItem = SettingModel(id!!, thumbnail!!, title!!, price!!)
+            val settingItem = SettingModel(id!!, thumbnail, title, price!!)
             resultList.add(settingItem)
             Log.d("준영테스트", "$resultList")
         }
