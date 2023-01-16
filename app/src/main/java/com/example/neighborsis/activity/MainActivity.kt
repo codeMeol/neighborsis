@@ -89,22 +89,20 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        lateinit var message: String
-        Toast.makeText(
-            this,
-            "${message} = message ${requestCode} = resultcode ${data} = data",
-            Toast.LENGTH_SHORT
-        ).show()
-        if (requestCode == Activity.RESULT_OK) {
-            message = data?.getStringExtra("key1").toString()
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-        }
 
-        if (message.equals("꺼주세요")) {
-            finish()
-        } else if (message.equals("돌아갔음")) {
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-        }
+           Log.d("준영테스트","${requestCode} = resultcode ${data} = data")
+
+//
+//        if (requestCode == Activity.RESULT_OK) {
+//            message = data?.getStringExtra("key1").toString()
+//            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+//        }
+//
+//        if (message.equals("꺼주세요")) {
+//            finish()
+//        } else if (message.equals("돌아갔음")) {
+//            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+//        }
     }
 
     private fun getSettingModelList(): ArrayList<SettingModel> {
