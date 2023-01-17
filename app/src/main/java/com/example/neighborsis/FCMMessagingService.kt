@@ -20,7 +20,7 @@ import com.google.firebase.messaging.RemoteMessage
 class FCMMessagingService() : FirebaseMessagingService() {
     var channelId: String? = ""
     var channelName: String? = ""
-   public var url : String? =""
+    var url : String? =""
 
     override fun onCreate() {
         super.onCreate()
@@ -85,15 +85,14 @@ class FCMMessagingService() : FirebaseMessagingService() {
             intent.putExtra("linkURL",remoteMessage.data.get("link"))
             url=remoteMessage.data.get("link")
         Log.d("준영테스트fcm","${url}")
-             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
-                intent.addFlags(
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP
-                            or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                )
-            val pendingIntent =
-                PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+             intent.flags = Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
 
-            val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            val pendingIntent =PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            pendingIntent.isImmutable()
+        }
+
+        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             val notificationBuilder = NotificationCompat.Builder(this, channelId!!)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(messagetitle)

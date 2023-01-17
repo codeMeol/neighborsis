@@ -1,11 +1,10 @@
 package com.example.neighborsis.activity
 
-import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.*
@@ -20,14 +19,13 @@ import com.example.neighborsis.util.PopupDialog
 import com.google.android.gms.ads.MobileAds
 
 
-
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
     var webView: WebView? = null
     var webViewBtn: ImageView? = null
     var settingBtn: ImageView? = null
     var mViewFlipper: ViewFlipper? = null
-    var fcm = FCMMessagingService()
+    val fcm = FCMMessagingService()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
@@ -41,14 +39,22 @@ class MainActivity : AppCompatActivity() {
             webViewClient = WebViewClient()
             settings.javaScriptEnabled = true
         }
+        val extras = intent.extras
+        var intentLinkURL =""
+        intentLinkURL = if(extras?.getString("linkURL")==null) {
+
+            "https://dunni.co.kr/"
+        } else {
+            extras.getString("linkURL")
+        }!!
         var mSettingAdapter = SettingAdapter(getSettingModelList())
         val mItemClickListener = OnItemClickListener { parent, view, position, l_position ->
             // parent는 AdapterView의 속성의 모두 사용 할 수 있다.
             val tv = parent.adapter.getItemId(position).toString()
-            if(tv.equals("2")){
-                val intent =Intent(applicationContext, AdminPushForFirebaseActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
-                    this.startActivity(intent)
+            if (tv.equals("2")) {
+                val intent = Intent(applicationContext, AdminPushForFirebaseActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+                this.startActivity(intent)
             }
             Toast.makeText(applicationContext, tv, Toast.LENGTH_SHORT).show()
         }
@@ -57,11 +63,10 @@ class MainActivity : AppCompatActivity() {
         mSettingList.adapter = mSettingAdapter
         mSettingList.onItemClickListener = mItemClickListener
 
-
-
-
         MobileAds.initialize(this)
-        webView?.loadUrl("https://dunni.co.kr/")
+            Log.d("준영테스트","${intentLinkURL}")
+        shouldOverrideUrlLoading(webView,intentLinkURL!!)
+
 
         webViewBtn?.setOnClickListener { it ->
             if (FLIPPERCOUNT == 1) {
@@ -80,12 +85,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-       var intentLinkURL = Intent().extras?.getString("linkURL")
-        if(fcm.url!=null){
-            Log.d("준영테스트","${fcm.url}")
+
         }
-        Log.d("onResume","${intentLinkURL}")
-    }
+
+
+
+
     override fun onBackPressed() {
         if (webView?.canGoBack()!!) {
             webView?.goBack()
@@ -100,23 +105,13 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-           Log.d("준영테스트","${resultCode}= resultCode , ${requestCode} = requestCode , ${data} = data")
+        Log.d("준영테스트", "${resultCode}= resultCode , ${requestCode} = requestCode , ${data} = data")
 
+        val message = data?.getStringExtra("linkUrl").toString()
 
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
-
-           val message = data?.getStringExtra("linkUrl").toString()
-
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-
-        }
-//
-//        if (message.equals("꺼주세요")) {
-//            finish()
-//        } else if (message.equals("돌아갔음")) {
-//            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-//        }
-
+    }
 
     private fun getSettingModelList(): ArrayList<SettingModel> {
         var resultList = arrayListOf<SettingModel>()
@@ -137,5 +132,36 @@ class MainActivity : AppCompatActivity() {
             Log.d("준영테스트", "$resultList")
         }
         return resultList
+    }
+    fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+      Log.d("shouldOverrideUrl ","안녕$url")
+        try {
+            /**
+             * 201229
+             * 카카오링크 오류 수정을 위해 아래 if문을 추가함.
+             */
+            if (url != null && url.startsWith("intent:kakaolink:")) {
+                try {
+                    val intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
+                    val existPackage =
+                        packageManager.getLaunchIntentForPackage(intent.getPackage()!!)
+                    if (existPackage != null) {
+                        startActivity(intent)
+                    } else {
+                        val marketIntent = Intent(Intent.ACTION_VIEW)
+                        marketIntent.data = Uri.parse("market://details?id=" + intent.getPackage())
+                        startActivity(marketIntent)
+                    }
+                    return true
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return false
+        }
+        webView!!.loadUrl(url!!)
+        return false
     }
 }
