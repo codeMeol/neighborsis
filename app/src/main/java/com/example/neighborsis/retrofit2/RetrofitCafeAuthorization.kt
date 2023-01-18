@@ -1,14 +1,12 @@
 package com.example.neighborsis.retrofit2
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import com.example.neighborsis.retrofit2.Constants.PushConstants.Companion.BASE_URL
-import com.example.neighborsis.retrofit2.RetrofitInterface.NotificationAPI
-import com.example.neighborsis.util.Pkce
+
+import com.example.neighborsis.retrofit2.Constants.CafeConstants.Companion.BASE_URL
+import com.example.neighborsis.retrofit2.RetrofitInterface.CafeAutorizationAPI
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitInstance {
+class RetrofitCafeAuthorization {
 
     companion object {
         private val retrofit by lazy {
@@ -19,7 +17,7 @@ class RetrofitInstance {
         }
 
         val api by lazy {
-            retrofit.create(NotificationAPI::class.java)
+            retrofit.create(CafeAutorizationAPI::class.java)
         }
     }
 }

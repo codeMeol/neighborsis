@@ -1,12 +1,8 @@
 package com.example.neighborsis.retrofit2.RetrofitInterface
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+
 import com.example.neighborsis.dataclass.PushNotification
-import com.example.neighborsis.retrofit2.Constants.CafeConstants.Companion.BASE_URL
-import com.example.neighborsis.retrofit2.Constants.CafeConstants.Companion.CLIENT_ID
-import com.example.neighborsis.retrofit2.Constants.CafeConstants.Companion.CODE_CHALLENGE
-import com.example.neighborsis.retrofit2.Constants.CafeConstants.Companion.REDIRECT_URL
+
 import com.example.neighborsis.retrofit2.Constants.PushConstants.Companion.CONTENT_TYPE
 import com.example.neighborsis.retrofit2.Constants.PushConstants.Companion.SERVER_KEY
 import okhttp3.ResponseBody

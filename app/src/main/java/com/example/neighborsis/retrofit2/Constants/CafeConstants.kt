@@ -7,7 +7,7 @@ import com.example.neighborsis.util.Pkce
 class CafeConstants {
     companion object {
         //for authorization
-        const val BASE_URL = "https://codemeol"
+        const val BASE_URL = "https://codemeol.cafe24api.com"
         const val CLIENT_ID = "imsjTwJPKxViOOBn8oGXxC"
         const val CLIENT_SE = "4fF2FVBRba2XZXUFEt7ZVG"
         const val REDIRECT_URL = "https://codemeol.cafe24.com/myshop/index.html"
