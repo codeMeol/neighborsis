@@ -4,7 +4,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.PendingIntent
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -14,17 +13,14 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.neighborsis.activity.MainActivity
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import java.util.logging.Logger
 
 
 class FCMMessagingService() : FirebaseMessagingService() {
     var channelId: String? = ""
     var channelName: String? = ""
-
+    var url : String? =""
 
     override fun onCreate() {
         super.onCreate()
@@ -84,20 +80,27 @@ class FCMMessagingService() : FirebaseMessagingService() {
                 if (remoteMessageType) remoteMessage.notification!!.title else remoteMessage.data.get(
                     "message"
                 )
+
             val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("linkURL",remoteMessage.data.get("link"))
+            url=remoteMessage.data.get("link")
+        Log.d("준영테스트fcm","${url}")
+             intent.flags = Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
 
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            intent.putExtra("linkUrl",remoteMessage.data.get("link"))
-            val pendingIntent =
-                PendingIntent.getActivity(this, 3000, intent, PendingIntent.FLAG_ONE_SHOT)
+            val pendingIntent =PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            pendingIntent.isImmutable()
+        }
 
-            val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             val notificationBuilder = NotificationCompat.Builder(this, channelId!!)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(messagetitle)
                 .setContentText(messagebody)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
+                .setFullScreenIntent(pendingIntent,true)
                 .setContentIntent(pendingIntent)
             var notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -117,3 +120,4 @@ class FCMMessagingService() : FirebaseMessagingService() {
 
     }
 }
+
