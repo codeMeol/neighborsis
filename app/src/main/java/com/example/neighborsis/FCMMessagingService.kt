@@ -116,6 +116,7 @@ class FCMMessagingService() : FirebaseMessagingService() {
                     )
                 )
             }
+
             notificationManager.notify(channelId!!.toInt(), notificationBuilder.build())
 
     }

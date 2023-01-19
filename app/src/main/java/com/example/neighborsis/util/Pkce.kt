@@ -10,6 +10,7 @@ import java.util.*
 
 
 class Pkce {
+    //base64 secure code create
     @RequiresApi(Build.VERSION_CODES.O)
     @Throws(UnsupportedEncodingException::class)
     fun generateCodeVerifier(): String? {
@@ -19,6 +20,7 @@ class Pkce {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(codeVerifier)
     }
 
+    //maded
     @RequiresApi(Build.VERSION_CODES.O)
     @Throws(UnsupportedEncodingException::class, NoSuchAlgorithmException::class)
     fun generateCodeChallange(codeVerifier: String): String? {

@@ -1,25 +1,18 @@
 package com.example.neighborsis.activity
 
 import android.annotation.SuppressLint
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.annotation.RequiresApi
-import com.example.neighborsis.DTO.PostResult
-import com.example.neighborsis.R
 import com.example.neighborsis.databinding.ActivityAdminPushForFirebaseBinding
 import com.example.neighborsis.dataclass.NotificationData
 import com.example.neighborsis.dataclass.PushNotification
-import com.example.neighborsis.retrofit2.RetrofitCafeAuthorization
 import com.example.neighborsis.retrofit2.RetrofitInstance
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
 
 
 class AdminPushForFirebaseActivity : AppCompatActivity() {
@@ -50,18 +43,16 @@ class AdminPushForFirebaseActivity : AppCompatActivity() {
             val pushTitle = pushForFirebaseBodyEdittext.text.toString() //메시지 =타이틀
             val pushLink =pushForFirebaseLinkEdittext.text.toString() //링크 =링크
             val recipientToken = myToken   /////내 토큰
-//            if(pushTitle.isNotEmpty() && pushLink.isNotEmpty() && recipientToken.isNotEmpty()) {
-//                PushNotification(
-//                    NotificationData(pushTitle,pushBody, pushLink),
-//                    recipientToken
-//                ).also {
-//                    sendNotification(it)
-//                }
-//            }
-            val post:PostResult= PostResult()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                sendCafe24Get(post)
+            if(pushTitle.isNotEmpty() && pushLink.isNotEmpty() && recipientToken.isNotEmpty()) {
+                PushNotification(
+                    NotificationData(pushTitle,pushBody, pushLink),
+                    recipientToken
+                ).also {
+                    sendNotification(it)
+                }
             }
+
+
         }}
         pushBtn()
     }
@@ -80,19 +71,7 @@ class AdminPushForFirebaseActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("LongLogTag")
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun sendCafe24Get(post: PostResult) = CoroutineScope(Dispatchers.IO).launch {
-        try {
-            val response = RetrofitCafeAuthorization.api.getPosts(post = toString())
-            if(response.isSuccessful) {
-                Log.d("준영테스트","${response.body()}")
-            } else {
-                Log.e(TAG, response.errorBody().toString())
-            }
-        } catch(e: Exception) {
-            Log.e(TAG, e.toString())
-        }
-    }
+
+
 
 }

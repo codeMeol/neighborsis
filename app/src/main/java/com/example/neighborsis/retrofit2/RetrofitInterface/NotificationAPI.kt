@@ -20,8 +20,7 @@ interface NotificationAPI {
         @Body notification: PushNotification
     ): Response<ResponseBody>
 
-    //https://{mall_id}.cafe24api.com/api/v2/oauth/authorize?response_type=code&client_id={client_id}&state={encode_csrf_token}
-    //&redirect_uri={encode_redirect_uri}&scope={scope}
+
 
 
 }
