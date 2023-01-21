@@ -1,6 +1,9 @@
 package com.example.neighborsis.activity
 
+import android.Manifest
+import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -10,8 +13,10 @@ import android.webkit.WebViewClient
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.example.neighborsis.FCMMessagingService
 import com.example.neighborsis.R
+import com.example.neighborsis.WebView.WebviewInterface
 import com.example.neighborsis.adapter.SettingAdapter
 import com.example.neighborsis.databinding.ActivityMainBinding
 import com.example.neighborsis.dataclass.SettingModel
@@ -26,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     var settingBtn: ImageView? = null
     var mViewFlipper: ViewFlipper? = null
     val fcm = FCMMessagingService()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
@@ -34,16 +40,20 @@ class MainActivity : AppCompatActivity() {
         webViewBtn = binding.webViewBtn
         settingBtn = binding.settingBtn
         mViewFlipper = binding.viewFlipper
+
         var FLIPPERCOUNT = 0
+
         webView?.apply {
             webViewClient = WebViewClient()
             settings.javaScriptEnabled = true
         }
+
+
         val extras = intent.extras
         var intentLinkURL =""
         intentLinkURL = if(extras?.getString("linkURL")==null) {
-
-            "https://dunni.co.kr/"
+            "file:///android_asset/new.html"
+//            "https://dunni.co.kr/"
         } else {
             extras.getString("linkURL")
         }!!
@@ -65,8 +75,10 @@ class MainActivity : AppCompatActivity() {
 
         MobileAds.initialize(this)
             Log.d("준영테스트","${intentLinkURL}")
+        verifyStoragePermissions(this)
         shouldOverrideUrlLoading(webView,intentLinkURL!!)
-
+        val webviewInterface=WebviewInterface(this)
+        webView!!.addJavascriptInterface(webviewInterface,"Native")
 
         webViewBtn?.setOnClickListener { it ->
             if (FLIPPERCOUNT == 1) {
@@ -74,6 +86,7 @@ class MainActivity : AppCompatActivity() {
                 mViewFlipper?.showPrevious()
             }
         }
+
         settingBtn?.setOnClickListener { it ->
             if (FLIPPERCOUNT == 0) {
                 FLIPPERCOUNT += 1
@@ -86,10 +99,8 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+
         }
-
-
-
 
     override fun onBackPressed() {
         if (webView?.canGoBack()!!) {
@@ -163,5 +174,25 @@ class MainActivity : AppCompatActivity() {
         }
         webView!!.loadUrl(url!!)
         return false
+    }
+
+
+    fun verifyStoragePermissions(activity: Activity?) {
+        val REQUEST_EXTERNAL_STORAGE = 1
+        val PERMISSIONS_STORAGE = arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+        // Check if we have write permission
+        val permission =
+            ActivityCompat.checkSelfPermission(activity!!, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                activity,
+                PERMISSIONS_STORAGE,
+                  REQUEST_EXTERNAL_STORAGE
+            )
+        }
     }
 }
