@@ -24,7 +24,7 @@ import com.example.neighborsis.util.PopupDialog
 import com.google.android.gms.ads.MobileAds
 
 
-@Suppress("DEPRECATION")
+
 class MainActivity : AppCompatActivity() {
     var webView: WebView? = null
     var webViewBtn: ImageView? = null
@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
             webViewClient = WebViewClient()
             settings.javaScriptEnabled = true
         }
-
+        fcm.addTopic(this)
 
         val extras = intent.extras
         var intentLinkURL =""

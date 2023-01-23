@@ -51,8 +51,7 @@ class AdminPushForFirebaseActivity : AppCompatActivity() {
                     sendNotification(it)
                 }
             }
-
-
+            
         }}
         pushBtn()
     }

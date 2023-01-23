@@ -10,11 +10,14 @@ import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.neighborsis.activity.MainActivity
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.google.firebase.messaging.ktx.messaging
 
 
 class FCMMessagingService() : FirebaseMessagingService() {
@@ -119,6 +122,18 @@ class FCMMessagingService() : FirebaseMessagingService() {
 
             notificationManager.notify(channelId!!.toInt(), notificationBuilder.build())
 
+    }
+
+    fun addTopic(context: Context){
+        Firebase.messaging.subscribeToTopic("weather")
+            .addOnCompleteListener { task ->
+                var msg = "Subscribed"
+                if (!task.isSuccessful) {
+                    msg = "Subscribe failed"
+                }
+
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            }
     }
 }
 
