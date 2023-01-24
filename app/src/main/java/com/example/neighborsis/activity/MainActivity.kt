@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity() {
         return resultList
     }
 
-    fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+    private fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
         Log.d("shouldOverrideUrl ", "안녕$url")
         try {
             /**
