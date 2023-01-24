@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import com.example.neighborsis.databinding.ActivityAdminPushForFirebaseBinding
 import com.example.neighborsis.dataclass.NotificationData
-import com.example.neighborsis.dataclass.PushNotification
+import com.example.neighborsis.dataclass.message
 import com.example.neighborsis.retrofit2.RetrofitInstance
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
@@ -39,38 +39,40 @@ class AdminPushForFirebaseActivity : AppCompatActivity() {
 
         fun pushBtn() = with(binding){
         pushBtn.setOnClickListener {
-            val pushBody = "동네언니" //타이틀 = value
-            val pushTitle = pushForFirebaseBodyEdittext.text.toString() //메시지 =타이틀
+            val pushTitle = "동네언니" //타이틀 = value
+            val  pushBody= pushForFirebaseBodyEdittext.text.toString() //메시지 =타이틀
             val pushLink =pushForFirebaseLinkEdittext.text.toString() //링크 =링크
             val recipientToken = myToken   /////내 토큰
+            val topic = "/topics/weather"
+
             if(pushTitle.isNotEmpty() && pushLink.isNotEmpty() && recipientToken.isNotEmpty()) {
-                PushNotification(
+                message(
                     NotificationData(pushTitle,pushBody, pushLink),
-                    recipientToken
+                            topic
                 ).also {
                     sendNotification(it)
                 }
             }
-            
+
         }}
         pushBtn()
     }
 
     @SuppressLint("LongLogTag")
-    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+    private fun sendNotification(notification: message) = CoroutineScope(Dispatchers.IO).launch {
+
         try {
             val response = RetrofitInstance.api.postNotification(notification)
             if(response.isSuccessful) {
+                Log.e(TAG, response.toString())
                     Log.d("준영테스트","${response.body()}")
             } else {
-                Log.e(TAG, response.errorBody().toString())
+                Log.e(TAG, response.code().toString())
+                Log.e(TAG, response.toString())
             }
         } catch(e: Exception) {
             Log.e(TAG, e.toString())
         }
     }
-
-
-
 
 }

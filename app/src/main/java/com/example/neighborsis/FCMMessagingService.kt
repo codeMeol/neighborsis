@@ -72,7 +72,7 @@ class FCMMessagingService() : FirebaseMessagingService() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun createNotification(remoteMessageType: Boolean, remoteMessage: RemoteMessage) {
-        Log.d("준영테스트","remoteMessageType = ${remoteMessageType} remoteMessage = $$remoteMessage")
+        Log.d("준영테스트","remoteMessageType = ${remoteMessageType} remoteMessage = $${remoteMessage.data} remoteMessage = ${remoteMessage.from}")
 
 
             val messagebody =
@@ -134,6 +134,23 @@ class FCMMessagingService() : FirebaseMessagingService() {
 
                 Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
             }
+    }
+
+    fun deleteTopic(context: Context){
+        Firebase.messaging.unsubscribeFromTopic("weather")
+            .addOnCompleteListener { task ->
+                var msg = "unSbuscribed"
+                if(!task.isSuccessful){
+                    msg = "unSubscribed is failed"
+                }
+
+                Toast.makeText(context,msg,Toast.LENGTH_SHORT).show()
+
+            }
+    }
+
+    fun sendByTopic(){
+
     }
 }
 
