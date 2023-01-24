@@ -5,16 +5,31 @@
     android:layout_height="match_parent"
     android:background="@color/Light_gray"
     android:orientation="vertical">
-
+     <LinearLayout
+         android:layout_marginTop="10dp"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content">
+          <ImageView
+              android:layout_width="70dp"
+              android:layout_height="70dp"
+              android:src="@drawable/sending_mail"
+              />
+          <TextView
+              android:layout_marginStart="10dp"
+              android:layout_width="match_parent"
+              android:layout_height="70dp"
+              android:text="설정"
+              android:textColorHighlight="@color/black"
+              android:gravity="center_vertical"
+              android:textSize="24sp"
+              />
+     </LinearLayout>
      <ListView
          android:layout_gravity="center"
          android:id="@+id/item_list"
          android:layout_margin="22dp"
          android:layout_width="match_parent"
          android:layout_height="match_parent" />
-     <com.google.android.gms.ads.AdView
-         android:layout_width="match_parent"
-         android:layout_height="50dp"
-         android:layout_weight="1"/>
+
 
 </LinearLayout>

@@ -1,22 +1,15 @@
 package com.example.neighborsis.adapter
 
-import android.content.Intent
-import android.util.Log
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.TextView
-import com.example.neighborsis.R
-
-
-
+import com.example.neighborsis.databinding.SettingItemBinding
 import com.example.neighborsis.dataclass.SettingModel
 
 
 class SettingAdapter(private val settingModelList: ArrayList<SettingModel>) : BaseAdapter() {
-
 
 
     override fun getCount(): Int {
@@ -26,31 +19,31 @@ class SettingAdapter(private val settingModelList: ArrayList<SettingModel>) : Ba
 
     override fun getItem(position: Int): SettingModel = settingModelList[position]
 
-    override fun getItemId(position: Int): Long =position.toLong()
+    override fun getItemId(position: Int): Long = position.toLong()
 
-    override fun getView(position: Int, view: View?, parent: ViewGroup?): View {
-        var convertView = view
-        val viewHolder=ViewHolder()
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
+        val holder: ViewHolder
         if (convertView == null) {
-            convertView = LayoutInflater.from(parent?.context).inflate(R.layout.setting_item, parent, false)
+            val itemBinding: SettingItemBinding =
+                SettingItemBinding.inflate(LayoutInflater.from(parent!!.context), parent, false)
+            holder = ViewHolder(itemBinding)
+            holder.view = itemBinding.root
+            holder.view!!.tag = holder
+        } else {
+            holder = convertView.tag as ViewHolder
         }
-        val item: SettingModel = settingModelList[position]
-
-        viewHolder.settingExplanationIcon?.setImageDrawable(item.settingExplanationIcon)
-        viewHolder.settingExplanationText?.setText(item.settingExplanationText)
-        viewHolder.settingValueText?.setText(item.settingValueText)
-        viewHolder.settingValueRightIcon?.setImageDrawable(item.settingValueRightIcon)
-
-
-        return convertView!!
+        holder.binding!!.settingExplanationIcon.setImageDrawable(settingModelList[position].settingExplanationIcon)
+        holder.binding!!.settingExplanationText.setText(settingModelList[position].settingExplanationText)
+        holder.binding!!.settingValueText.setText(settingModelList[position].settingValueText)
+        holder.binding!!.settingValueRightIcon.setImageDrawable(settingModelList[position].settingValueRightIcon)
+        return holder.view
 
     }
 
-    class ViewHolder {
-        var settingExplanationIcon: ImageView? =null
-        var settingExplanationText: TextView?=null
-        var settingValueText: TextView?=null
-        var settingValueRightIcon: ImageView?=null
-    }
+    class ViewHolder(itemBinding: SettingItemBinding) {
 
+        var view: View? = null
+        var binding: SettingItemBinding? = itemBinding
+
+    }
 }

@@ -65,10 +65,8 @@ class AdminPushForFirebaseActivity : AppCompatActivity() {
             val response = RetrofitInstance.api.postNotification(notification)
             if(response.isSuccessful) {
                 Log.e(TAG, response.toString())
-                    Log.d("준영테스트","${response.body()}")
             } else {
                 Log.e(TAG, response.code().toString())
-                Log.e(TAG, response.toString())
             }
         } catch(e: Exception) {
             Log.e(TAG, e.toString())

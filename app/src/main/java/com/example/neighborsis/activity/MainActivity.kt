@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     var settingBtn: ImageView? = null
     var mViewFlipper: ViewFlipper? = null
     val fcm = FCMMessagingService()
-
+    var isAdmin :Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
@@ -52,12 +52,11 @@ class MainActivity : AppCompatActivity() {
         val extras = intent.extras
         var intentLinkURL =""
         intentLinkURL = if(extras?.getString("linkURL")==null) {
-            "file:///android_asset/new.html"
-//            "https://dunni.co.kr/"
+            "https://dunni.co.kr/"
         } else {
             extras.getString("linkURL")
         }!!
-        var mSettingAdapter = SettingAdapter(getSettingModelList())
+        var mSettingAdapter = SettingAdapter(getSettingModelList(isAdmin))
         val mItemClickListener = OnItemClickListener { parent, view, position, l_position ->
             // parent는 AdapterView의 속성의 모두 사용 할 수 있다.
             val tv = parent.adapter.getItemId(position).toString()
@@ -98,8 +97,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
-
         }
 
     override fun onBackPressed() {
@@ -108,7 +105,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             var CancelPopUp: PopupDialog = PopupDialog(this, finishApp = { finish() })
             CancelPopUp.show()
-
         }
     }
 
@@ -124,24 +120,27 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun getSettingModelList(): ArrayList<SettingModel> {
+    private fun getSettingModelList(isAdmin:Boolean): ArrayList<SettingModel> {
         var resultList = arrayListOf<SettingModel>()
-        var thumbnail: String
-        var cnt = 0
-        while (cnt++ < 3) {
+
+        var cnt =0
+        var itemSize = if (!isAdmin)2 else 3
+        while (cnt++ < itemSize) {
             var id = getDrawable(R.drawable.setting_user_icon)
-            if (cnt == 2) {
-                thumbnail = "개발자모드"
+
+           val thumbnail = if (cnt == 3) {
+                "개발자모드"
             } else {
-                thumbnail = "사용자 정보"
+                "사용자 정보"
             }
             var title: String = "adminA123"
             var price = getDrawable(R.drawable.right_btn)
 
             val settingItem = SettingModel(id!!, thumbnail, title, price!!)
             resultList.add(settingItem)
-            Log.d("준영테스트", "$resultList")
+
         }
+        Log.d("준영테스트", "cnt = $cnt, result =$resultList")
         return resultList
     }
     fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
