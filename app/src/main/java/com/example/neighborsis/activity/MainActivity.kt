@@ -24,14 +24,13 @@ import com.example.neighborsis.util.PopupDialog
 import com.google.android.gms.ads.MobileAds
 
 
-
 class MainActivity : AppCompatActivity() {
     var webView: WebView? = null
     var webViewBtn: ImageView? = null
     var settingBtn: ImageView? = null
     var mViewFlipper: ViewFlipper? = null
     val fcm = FCMMessagingService()
-    var isAdmin :Boolean = false
+    var isAdmin: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
@@ -50,13 +49,13 @@ class MainActivity : AppCompatActivity() {
         fcm.addTopic(this)
 
         val extras = intent.extras
-        var intentLinkURL =""
-        intentLinkURL = if(extras?.getString("linkURL")==null) {
+        var intentLinkURL = ""
+        intentLinkURL = if (extras?.getString("linkURL") == null) {
             "https://dunni.co.kr/"
         } else {
             extras.getString("linkURL")
         }!!
-        var mSettingAdapter = SettingAdapter(getSettingModelList(isAdmin))
+        var mSettingAdapter = SettingAdapter(getSettingModelList(isAdmin,"userId"))
         val mItemClickListener = OnItemClickListener { parent, view, position, l_position ->
             // parent는 AdapterView의 속성의 모두 사용 할 수 있다.
             val tv = parent.adapter.getItemId(position).toString()
@@ -73,11 +72,11 @@ class MainActivity : AppCompatActivity() {
         mSettingList.onItemClickListener = mItemClickListener
 
         MobileAds.initialize(this)
-            Log.d("준영테스트","${intentLinkURL}")
+        Log.d("준영테스트", "${intentLinkURL}")
         verifyStoragePermissions(this)
-        shouldOverrideUrlLoading(webView,intentLinkURL!!)
-        val webviewInterface=WebviewInterface(this)
-        webView!!.addJavascriptInterface(webviewInterface,"Native")
+        shouldOverrideUrlLoading(webView, intentLinkURL!!)
+        val webviewInterface = WebviewInterface(this)
+        webView!!.addJavascriptInterface(webviewInterface, "Native")
 
         webViewBtn?.setOnClickListener { it ->
             if (FLIPPERCOUNT == 1) {
@@ -97,7 +96,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        }
+    }
 
     override fun onBackPressed() {
         if (webView?.canGoBack()!!) {
@@ -120,31 +119,40 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun getSettingModelList(isAdmin:Boolean): ArrayList<SettingModel> {
+    private fun getSettingModelList(isAdmin: Boolean,userId:String): ArrayList<SettingModel> {
         var resultList = arrayListOf<SettingModel>()
-
-        var cnt =0
-        var itemSize = if (!isAdmin)2 else 3
+        var modeDrawable = getDrawable(R.drawable.setting_user_icon)
+        var modeExStr = "사용자 정보"
+        var value: String = "$userId"
+        var cnt = 0
+        var itemSize = if (!isAdmin) 2 else 3
         while (cnt++ < itemSize) {
-            var id = getDrawable(R.drawable.setting_user_icon)
+            if (cnt == 3) {
+                modeDrawable = getDrawable(R.drawable.setting_user_icon)
+                modeExStr = "개발자모드"
+                value="개발자 준영몬"
 
-           val thumbnail = if (cnt == 3) {
-                "개발자모드"
-            } else {
-                "사용자 정보"
+            } else if(cnt == 2){
+                var pushInfo:Boolean?=null;
+                var marketingInfo:Boolean?=null
+                modeDrawable = getDrawable(R.drawable.sending_mail)
+                modeExStr = "푸시알림 동의 정보"
+                value="푸시 $pushInfo \n이벤트알림 $marketingInfo"
+
             }
-            var title: String = "adminA123"
-            var price = getDrawable(R.drawable.right_btn)
 
-            val settingItem = SettingModel(id!!, thumbnail, title, price!!)
+            var rightBtn = getDrawable(R.drawable.right_btn)
+
+            val settingItem = SettingModel(modeDrawable!!, modeExStr, value, rightBtn!!)
             resultList.add(settingItem)
 
         }
         Log.d("준영테스트", "cnt = $cnt, result =$resultList")
         return resultList
     }
+
     fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-      Log.d("shouldOverrideUrl ","안녕$url")
+        Log.d("shouldOverrideUrl ", "안녕$url")
         try {
             /**
              * 201229
@@ -184,13 +192,16 @@ class MainActivity : AppCompatActivity() {
         )
         // Check if we have write permission
         val permission =
-            ActivityCompat.checkSelfPermission(activity!!, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            ActivityCompat.checkSelfPermission(
+                activity!!,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
         if (permission != PackageManager.PERMISSION_GRANTED) {
             // We don't have permission so prompt the user
             ActivityCompat.requestPermissions(
                 activity,
                 PERMISSIONS_STORAGE,
-                  REQUEST_EXTERNAL_STORAGE
+                REQUEST_EXTERNAL_STORAGE
             )
         }
     }

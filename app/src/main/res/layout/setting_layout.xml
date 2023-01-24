@@ -12,13 +12,17 @@
           <ImageView
               android:layout_width="70dp"
               android:layout_height="70dp"
-              android:src="@drawable/sending_mail"
+              android:src="@drawable/setting_back_btn"
               />
           <TextView
               android:layout_marginStart="10dp"
               android:layout_width="match_parent"
               android:layout_height="70dp"
               android:text="설정"
+              android:shadowRadius="7.0"
+              android:shadowDx="7.0"
+              android:shadowDy="7.0"
+              android:shadowColor="#000000"
               android:textColorHighlight="@color/black"
               android:gravity="center_vertical"
               android:textSize="24sp"

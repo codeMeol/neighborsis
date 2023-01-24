@@ -39,15 +39,21 @@
                 android:id="@+id/webViewBtn"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@mipmap/ic_launcher_round" />
+                android:padding="6dp"
+                android:src="@drawable/dunny_icon"
+                android:background="@drawable/round_background"/>
 
+                <View
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    />
             <ImageView
                 android:id="@+id/settingBtn"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@mipmap/ic_launcher_round" />
+                android:background="@drawable/round_background"
+                android:padding="8dp"
+                android:src="@drawable/setting_icon" />
 
             <View
                 android:layout_width="10dp"

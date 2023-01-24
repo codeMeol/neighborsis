@@ -1,5 +1,6 @@
 package com.example.neighborsis
 
+import android.app.Dialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_HIGH
@@ -125,6 +126,7 @@ class FCMMessagingService() : FirebaseMessagingService() {
     }
 
     fun addTopic(context: Context){
+
         Firebase.messaging.subscribeToTopic("weather")
             .addOnCompleteListener { task ->
                 var msg = "Subscribed"
