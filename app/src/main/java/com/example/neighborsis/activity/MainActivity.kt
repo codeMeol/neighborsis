@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.neighborsis.FCMMessagingService
 import com.example.neighborsis.R
+import com.example.neighborsis.WebView.WebViewClientClass
 import com.example.neighborsis.WebView.WebviewInterface
 import com.example.neighborsis.adapter.SettingAdapter
 import com.example.neighborsis.databinding.ActivityMainBinding
@@ -74,7 +75,9 @@ class MainActivity : AppCompatActivity() {
         MobileAds.initialize(this)
         Log.d("준영테스트", "${intentLinkURL}")
         verifyStoragePermissions(this)
-        shouldOverrideUrlLoading(webView, intentLinkURL!!)
+      val webviewclass= WebViewClientClass(this)
+        webView!!.webViewClient=webviewclass
+        webView!!.loadUrl(intentLinkURL)
         val webviewInterface = WebviewInterface(this)
         webView!!.addJavascriptInterface(webviewInterface, "Native")
 
@@ -151,37 +154,6 @@ class MainActivity : AppCompatActivity() {
         return resultList
     }
 
-    private fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-        Log.d("shouldOverrideUrl ", "안녕$url")
-        try {
-            /**
-             * 201229
-             * 카카오링크 오류 수정을 위해 아래 if문을 추가함.
-             */
-            if (url != null && url.startsWith("intent:kakaolink:")) {
-                try {
-                    val intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
-                    val existPackage =
-                        packageManager.getLaunchIntentForPackage(intent.getPackage()!!)
-                    if (existPackage != null) {
-                        startActivity(intent)
-                    } else {
-                        val marketIntent = Intent(Intent.ACTION_VIEW)
-                        marketIntent.data = Uri.parse("market://details?id=" + intent.getPackage())
-                        startActivity(marketIntent)
-                    }
-                    return true
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return false
-        }
-        webView!!.loadUrl(url!!)
-        return false
-    }
 
 
     fun verifyStoragePermissions(activity: Activity?) {

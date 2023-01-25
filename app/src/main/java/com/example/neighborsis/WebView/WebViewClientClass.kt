@@ -1,43 +1,63 @@
 package com.example.neighborsis.WebView
 
-import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.net.Uri
+import android.util.Log
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.core.content.ContextCompat.startActivity
 
 
-class WebViewClientClass : WebViewClient() {
+class WebViewClientClass(context: Context) : WebViewClient() {
+    val context = context
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+        return if (url.startsWith(INTENT_PROTOCOL_START)) {
+            val customUrlStartIndex = INTENT_PROTOCOL_START.length
+            val customUrlEndIndex = url.indexOf(INTENT_PROTOCOL_INTENT)
 
-        try {
-            /**
-             * 201229
-             * 카카오링크 오류 수정을 위해 아래 if문을 추가함.
-             */
-            if (url != null && url.startsWith("intent:kakaolink:")) {
+            if (customUrlEndIndex < 0) {
+                false
+            } else {
+                val customUrl = url.substring(customUrlStartIndex, customUrlEndIndex)
+                Log.d("준영테스트","커스텀 url = $customUrl")
                 try {
-                    val intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
-                    val existPackage: Intent =
-                        Activity().packageManager.getLaunchIntentForPackage(intent.getPackage()!!)!!
-                    if (existPackage != null) {
-                        startActivity(existPackage.get)
-                    } else {
-                        val marketIntent = Intent(Intent.ACTION_VIEW)
-                        marketIntent.data =     Uri.parse("market://details?id=" + intent.getPackage())
-                        startActivity(marketIntent)
-                    }
-                    return true
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return false
-        }
+                   val intent : Intent? = context.packageManager.getLaunchIntentForPackage("com.kakao.talk")
+                    intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    val packageStartIndex = customUrlEndIndex + INTENT_PROTOCOL_INTENT.length
+                    val packageEndIndex = url.indexOf(INTENT_PROTOCOL_END)
+                    val packageName = "com.kakao.talk"
 
-        return false
+                    context.startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW, Uri.parse(
+                                GOOGLE_PLAY_STORE_PREFIX + packageName
+                            )
+                        )
+                    )
+                }
+                view.loadUrl(customUrl)
+                true
+            }
+        } else {
+            false
+        }
+    }
+
+    override fun onPageFinished(view: WebView?, url: String?) {
+        super.onPageFinished(view, url)
+
+
+    }
+
+    companion object {
+        const val INTENT_PROTOCOL_START = "intent:"
+        const val INTENT_PROTOCOL_INTENT = "#Intent;"
+        const val INTENT_PROTOCOL_END = ";end;"
+        const val GOOGLE_PLAY_STORE_PREFIX = "market://details?id="
     }
 }
