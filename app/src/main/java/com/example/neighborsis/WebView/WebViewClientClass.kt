@@ -3,8 +3,6 @@ package com.example.neighborsis.WebView
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.content.pm.ResolveInfo
 import android.net.Uri
 import android.util.Log
 import android.webkit.WebView
@@ -22,11 +20,15 @@ class WebViewClientClass(context: Context) : WebViewClient() {
                 false
             } else {
                 val customUrl = url.substring(customUrlStartIndex, customUrlEndIndex)
-                Log.d("준영테스트","커스텀 url = $customUrl")
+                Log.d("준영테스트", "커스텀 url = $customUrl")
                 try {
-                   val intent : Intent? = context.packageManager.getLaunchIntentForPackage("com.kakao.talk")
-                    intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    context.startActivity(intent)
+                    val intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
+                    val existPackage: Intent? =
+                        intent.getPackage()
+                            ?.let { context.packageManager.getLaunchIntentForPackage(it) }
+                    if (existPackage != null) {
+                        context.startActivity(intent)
+                    }
                 } catch (e: ActivityNotFoundException) {
                     val packageStartIndex = customUrlEndIndex + INTENT_PROTOCOL_INTENT.length
                     val packageEndIndex = url.indexOf(INTENT_PROTOCOL_END)
@@ -40,7 +42,7 @@ class WebViewClientClass(context: Context) : WebViewClient() {
                         )
                     )
                 }
-                view.loadUrl(customUrl)
+
                 true
             }
         } else {
