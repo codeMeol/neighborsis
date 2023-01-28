@@ -4,4 +4,6 @@
     <string name="noti_channel_id">100</string>
     <string name="default_notification_channel_id">100100123</string>
     <string name="default_notification_channel_name">testJun</string>
+    <string name="pushOkLevel">pushOkLevel</string>
+    <string name="setting">설정</string>
 </resources>

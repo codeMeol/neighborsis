@@ -2,6 +2,7 @@ package com.example.neighborsis.activity
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -21,7 +22,9 @@ import com.example.neighborsis.WebView.WebviewInterface
 import com.example.neighborsis.adapter.SettingAdapter
 import com.example.neighborsis.databinding.ActivityMainBinding
 import com.example.neighborsis.dataclass.SettingModel
+import com.example.neighborsis.retrofit2.Constants.PushConstants
 import com.example.neighborsis.util.PopupDialog
+import com.example.neighborsis.util.PushCheckDialog
 import com.google.android.gms.ads.MobileAds
 
 
@@ -40,23 +43,39 @@ class MainActivity : AppCompatActivity() {
         webViewBtn = binding.webViewBtn
         settingBtn = binding.settingBtn
         mViewFlipper = binding.viewFlipper
-
+        val pushDialog =PushCheckDialog()
         var FLIPPERCOUNT = 0
-
+        val extras = intent.extras
+        var intentLinkURL = ""
+        var mSettingAdapter : SettingAdapter?
+        val webviewclass= WebViewClientClass(this)
+        val webviewInterface = WebviewInterface(this)
         webView?.apply {
             webViewClient = WebViewClient()
             settings.javaScriptEnabled = true
         }
-        fcm.addTopic(this)
 
-        val extras = intent.extras
-        var intentLinkURL = ""
+        val sharedPref = getSharedPreferences(this.getString(R.string.pushOkLevel), Context.MODE_PRIVATE)
+        if(sharedPref.equals(PushConstants.PUSH_SUBSCRIBED_ALL)||sharedPref.equals(PushConstants.PUSH_SUBSCRIBED_SYSTEM)||sharedPref.equals(PushConstants.PUSH_SUBSCRIBED_MARKETING)){
+            fcm.addTopic(this)
+        }else if(sharedPref.equals(PushConstants.PUSH_SUBSCRIBED_NONE)){
+
+        }
+        else {
+        pushDialog.show(
+            supportFragmentManager,"pushDialog"
+            )
+        }
+
+
+
+
         intentLinkURL = if (extras?.getString("linkURL") == null) {
             "https://dunni.co.kr/"
         } else {
             extras.getString("linkURL")
         }!!
-        var mSettingAdapter = SettingAdapter(getSettingModelList(isAdmin,"userId"))
+       mSettingAdapter = SettingAdapter(getSettingModelList(isAdmin,"userId"))
         val mItemClickListener = OnItemClickListener { parent, view, position, l_position ->
             // parent는 AdapterView의 속성의 모두 사용 할 수 있다.
             val tv = parent.adapter.getItemId(position).toString()
@@ -64,8 +83,11 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(applicationContext, AdminPushForFirebaseActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                 this.startActivity(intent)
+            } else if(tv.equals("1")){
+                val intent = Intent(applicationContext, AdminPushForFirebaseActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+                this.startActivity(intent)
             }
-            Toast.makeText(applicationContext, tv, Toast.LENGTH_SHORT).show()
         }
 
         val mSettingList = binding.adminPushLayout.findViewById<ListView>(R.id.item_list)
@@ -75,10 +97,9 @@ class MainActivity : AppCompatActivity() {
         MobileAds.initialize(this)
         Log.d("준영테스트", "${intentLinkURL}")
         verifyStoragePermissions(this)
-      val webviewclass= WebViewClientClass(this)
+
         webView!!.webViewClient=webviewclass
         webView!!.loadUrl(intentLinkURL)
-        val webviewInterface = WebviewInterface(this)
         webView!!.addJavascriptInterface(webviewInterface, "Native")
 
         webViewBtn?.setOnClickListener { it ->
