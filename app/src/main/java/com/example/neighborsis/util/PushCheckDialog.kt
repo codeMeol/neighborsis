@@ -19,6 +19,11 @@ class PushCheckDialog : DialogFragment() {
                 .setNegativeButton("취소",
                     DialogInterface.OnClickListener { dialog, id ->
                         // User cancelled the dialog
+                        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return@OnClickListener
+                        with (sharedPref.edit()) {
+                            putString("pushOkLevel",PushConstants.PUSH_SUBSCRIBED_NONE)
+                            apply()
+                        }
                     })
                 .setPositiveButton("동의",
                     DialogInterface.OnClickListener { dialog, id ->

@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -55,13 +54,13 @@ class MainActivity : AppCompatActivity() {
             settings.javaScriptEnabled = true
         }
 
-        val sharedPref = getSharedPreferences(this.getString(R.string.pushOkLevel), Context.MODE_PRIVATE)
+        val sharedPref = getPreferences(Context.MODE_PRIVATE).getString(this.getString(R.string.pushOkLevel), "")
+        Log.d("준영테스트","sharedPref = $sharedPref")
         if(sharedPref.equals(PushConstants.PUSH_SUBSCRIBED_ALL)||sharedPref.equals(PushConstants.PUSH_SUBSCRIBED_SYSTEM)||sharedPref.equals(PushConstants.PUSH_SUBSCRIBED_MARKETING)){
             fcm.addTopic(this)
         }else if(sharedPref.equals(PushConstants.PUSH_SUBSCRIBED_NONE)){
 
-        }
-        else {
+        }else {
         pushDialog.show(
             supportFragmentManager,"pushDialog"
             )
@@ -84,7 +83,8 @@ class MainActivity : AppCompatActivity() {
                 intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                 this.startActivity(intent)
             } else if(tv.equals("1")){
-                val intent = Intent(applicationContext, AdminPushForFirebaseActivity::class.java)
+                val intent = Intent(applicationContext, testActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                 this.startActivity(intent)
             }
