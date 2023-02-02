@@ -4,4 +4,10 @@
     <string name="noti_channel_id">100</string>
     <string name="default_notification_channel_id">100100123</string>
     <string name="default_notification_channel_name">testJun</string>
+    <string name="pushOkLevel">pushOkLevel</string>
+    <string name="setting">설정</string>
+    <string name="pushCheckTitle">푸시정보 알림 동의</string>
+    <string name="pushCheckMarketing">마케팅 알림 동의</string>
+    <string name="pushCheckSystem">시스템 알림 동의</string>
+
 </resources>
