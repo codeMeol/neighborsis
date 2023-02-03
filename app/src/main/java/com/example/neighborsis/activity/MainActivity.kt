@@ -54,12 +54,10 @@ class MainActivity : AppCompatActivity() {
             settings.javaScriptEnabled = true
         }
 
-        val sharedPref = getPreferences(Context.MODE_PRIVATE).getString(this.getString(R.string.pushOkLevel), "")
+        val sharedPref = getPreferences(Context.MODE_PRIVATE).getBoolean(PushConstants.PUSH_SUBSCRIBED_NONE, false)
         Log.d("준영테스트","sharedPref = $sharedPref")
-        if(sharedPref.equals(PushConstants.PUSH_SUBSCRIBED_ALL)||sharedPref.equals(PushConstants.PUSH_SUBSCRIBED_SYSTEM)||sharedPref.equals(PushConstants.PUSH_SUBSCRIBED_MARKETING)){
+        if(sharedPref){
             fcm.addTopic(this)
-        }else if(sharedPref.equals(PushConstants.PUSH_SUBSCRIBED_NONE)){
-
         }else {
         pushDialog.show(
             supportFragmentManager,"pushDialog"

@@ -9,7 +9,6 @@ class PushConstants {
         const val BASE_URL = "https://fcm.googleapis.com"
 
         //푸시 알림 수신자 체크를 위한 상태
-        const val PUSH_SUBSCRIBED_ALL = "subscribedBoth"
         const val PUSH_SUBSCRIBED_SYSTEM = "subscribedSystem"
         const val PUSH_SUBSCRIBED_MARKETING = "subscribedMarketing"
         const val PUSH_SUBSCRIBED_NONE: String = "subscribedNone"

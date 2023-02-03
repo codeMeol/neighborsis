@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.DialogFragment
 import com.example.neighborsis.R
 import com.example.neighborsis.retrofit2.Constants.PushConstants
@@ -21,7 +22,9 @@ class PushCheckDialog : DialogFragment() {
                         // User cancelled the dialog
                         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return@OnClickListener
                         with (sharedPref.edit()) {
-                            putString("pushOkLevel",PushConstants.PUSH_SUBSCRIBED_NONE)
+                            putBoolean(PushConstants.PUSH_SUBSCRIBED_NONE,true)
+                            putBoolean(PushConstants.PUSH_SUBSCRIBED_MARKETING,false)
+                            putBoolean(PushConstants.PUSH_SUBSCRIBED_SYSTEM,false)
                             apply()
                         }
                     })
@@ -29,9 +32,12 @@ class PushCheckDialog : DialogFragment() {
                     DialogInterface.OnClickListener { dialog, id ->
                         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return@OnClickListener
                         with (sharedPref.edit()) {
-                            putString("pushOkLevel",PushConstants.PUSH_SUBSCRIBED_ALL)
+                            putBoolean(PushConstants.PUSH_SUBSCRIBED_MARKETING,true)
+                            putBoolean(PushConstants.PUSH_SUBSCRIBED_SYSTEM,true)
                             apply()
                         }
+                        Log.d("준영테스트","Marketing = ${sharedPref.getBoolean(PushConstants.PUSH_SUBSCRIBED_MARKETING, false)}" +
+                                "System = ${sharedPref.getBoolean(PushConstants.PUSH_SUBSCRIBED_SYSTEM, false)} ")
                     })
                 .setIcon(R.drawable.dunny_icon)
                 .setTitle("푸시알림 동의 받기")
