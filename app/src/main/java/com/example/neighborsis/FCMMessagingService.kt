@@ -25,7 +25,7 @@ class FCMMessagingService() : FirebaseMessagingService() {
     var channelId: String? = ""
     var channelName: String? = ""
     var url : String? =""
-
+    val TAG :String = this.javaClass.name
     override fun onCreate() {
         super.onCreate()
 
@@ -125,29 +125,27 @@ class FCMMessagingService() : FirebaseMessagingService() {
 
     }
 
-    fun addTopic(context: Context){
+    fun addTopic(topic:String){
 
-        Firebase.messaging.subscribeToTopic("weather")
+        Firebase.messaging.subscribeToTopic("$topic")
             .addOnCompleteListener { task ->
                 var msg = "Subscribed"
                 if (!task.isSuccessful) {
                     msg = "Subscribe failed"
                 }
 
-                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                Log.d(TAG,"$msg")
             }
     }
 
-    fun deleteTopic(context: Context){
-        Firebase.messaging.unsubscribeFromTopic("weather")
+    fun deleteTopic(topic: String){
+        Firebase.messaging.unsubscribeFromTopic("$topic")
             .addOnCompleteListener { task ->
                 var msg = "unSbuscribed"
                 if(!task.isSuccessful){
                     msg = "unSubscribed is failed"
                 }
-
-                Toast.makeText(context,msg,Toast.LENGTH_SHORT).show()
-
+                Log.d(TAG,"$msg")
             }
     }
 

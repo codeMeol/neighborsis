@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.neighborsis.FCMMessagingService
 import com.example.neighborsis.R
+import com.example.neighborsis.SharedPreferenceClass.Sharedpref
 import com.example.neighborsis.WebView.WebViewClientClass
 import com.example.neighborsis.WebView.WebviewInterface
 import com.example.neighborsis.adapter.SettingAdapter
@@ -32,8 +33,9 @@ class MainActivity : AppCompatActivity() {
     var webViewBtn: ImageView? = null
     var settingBtn: ImageView? = null
     var mViewFlipper: ViewFlipper? = null
-    val fcm = FCMMessagingService()
+    private var sharedPref: Sharedpref? = null
     var isAdmin: Boolean = false
+    var mSettingList :ListView? =null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
@@ -42,25 +44,28 @@ class MainActivity : AppCompatActivity() {
         webViewBtn = binding.webViewBtn
         settingBtn = binding.settingBtn
         mViewFlipper = binding.viewFlipper
-        val pushDialog =PushCheckDialog()
+        val pushDialog = PushCheckDialog()
         var FLIPPERCOUNT = 0
         val extras = intent.extras
         var intentLinkURL = ""
-        var mSettingAdapter : SettingAdapter?
-        val webviewclass= WebViewClientClass(this)
+        var mSettingAdapter: SettingAdapter?
+        val webviewclass = WebViewClientClass(this)
         val webviewInterface = WebviewInterface(this)
         webView?.apply {
             webViewClient = WebViewClient()
             settings.javaScriptEnabled = true
         }
 
-        val sharedPref = getPreferences(Context.MODE_PRIVATE).getBoolean(PushConstants.PUSH_SUBSCRIBED_NONE, false)
-        Log.d("준영테스트","sharedPref = $sharedPref")
-        if(sharedPref){
-            fcm.addTopic(this)
-        }else {
-        pushDialog.show(
-            supportFragmentManager,"pushDialog"
+        sharedPref = Sharedpref(this.getString(R.string.pushOkLevel), this)
+        Log.d(
+            "준영테스트",
+            "sharedPref = ${sharedPref!!.getPrefBool(PushConstants.PUSH_SUBSCRIBED_INITIALIZING)}"
+        )
+        if (sharedPref!!.getPrefBool(PushConstants.PUSH_SUBSCRIBED_INITIALIZING)) {
+
+        } else {
+            pushDialog.show(
+                supportFragmentManager, "pushDialog"
             )
         }
 
@@ -72,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             extras.getString("linkURL")
         }!!
-       mSettingAdapter = SettingAdapter(getSettingModelList(isAdmin,"userId"))
+        mSettingAdapter = SettingAdapter(getSettingModelList(isAdmin, "userId"))
         val mItemClickListener = OnItemClickListener { parent, view, position, l_position ->
             // parent는 AdapterView의 속성의 모두 사용 할 수 있다.
             val tv = parent.adapter.getItemId(position).toString()
@@ -80,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(applicationContext, AdminPushForFirebaseActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                 this.startActivity(intent)
-            } else if(tv.equals("1")){
+            } else if (tv.equals("1")) {
                 val intent = Intent(applicationContext, testActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
@@ -88,15 +93,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val mSettingList = binding.adminPushLayout.findViewById<ListView>(R.id.item_list)
-        mSettingList.adapter = mSettingAdapter
-        mSettingList.onItemClickListener = mItemClickListener
+        mSettingList = binding.adminPushLayout.findViewById<ListView>(R.id.item_list)
+        mSettingList!!.adapter = mSettingAdapter
+        mSettingList!!.onItemClickListener = mItemClickListener
 
         MobileAds.initialize(this)
         Log.d("준영테스트", "${intentLinkURL}")
         verifyStoragePermissions(this)
 
-        webView!!.webViewClient=webviewclass
+        webView!!.webViewClient = webviewclass
         webView!!.loadUrl(intentLinkURL)
         webView!!.addJavascriptInterface(webviewInterface, "Native")
 
@@ -111,6 +116,7 @@ class MainActivity : AppCompatActivity() {
             if (FLIPPERCOUNT == 0) {
                 FLIPPERCOUNT += 1
                 mViewFlipper?.showNext()
+
             }
         }
 
@@ -118,6 +124,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        mSettingList!!.adapter = SettingAdapter( getSettingModelList(isAdmin,"userId"))
     }
 
     override fun onBackPressed() {
@@ -141,7 +148,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun getSettingModelList(isAdmin: Boolean,userId:String): ArrayList<SettingModel> {
+    private fun getSettingModelList(isAdmin: Boolean, userId: String): ArrayList<SettingModel> {
         var resultList = arrayListOf<SettingModel>()
         var modeDrawable = getDrawable(R.drawable.setting_user_icon)
         var modeExStr = "사용자 정보"
@@ -152,14 +159,18 @@ class MainActivity : AppCompatActivity() {
             if (cnt == 3) {
                 modeDrawable = getDrawable(R.drawable.setting_user_icon)
                 modeExStr = "개발자모드"
-                value="개발자 준영몬"
+                value = "개발자 준영몬"
 
-            } else if(cnt == 2){
-                var pushInfo:Boolean?=null;
-                var marketingInfo:Boolean?=null
+            } else if (cnt == 2) {
+                var pushInfo: String =
+                    if (sharedPref!!.getPrefBool(PushConstants.PUSH_SUBSCRIBED_SYSTEM)) "동의"
+                    else "미동의"
+                var marketingInfo: String =
+                    if(sharedPref!!.getPrefBool(PushConstants.PUSH_SUBSCRIBED_MARKETING)) "동의"
+                    else "미동의"
                 modeDrawable = getDrawable(R.drawable.sending_mail)
                 modeExStr = "푸시알림 동의 정보"
-                value="푸시 $pushInfo \n이벤트알림 $marketingInfo"
+                value = "푸시 $pushInfo \n이벤트알림 $marketingInfo"
 
             }
 
@@ -172,7 +183,6 @@ class MainActivity : AppCompatActivity() {
         Log.d("준영테스트", "cnt = $cnt, result =$resultList")
         return resultList
     }
-
 
 
     fun verifyStoragePermissions(activity: Activity?) {

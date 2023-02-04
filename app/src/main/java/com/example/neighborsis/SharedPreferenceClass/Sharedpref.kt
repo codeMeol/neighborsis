@@ -6,14 +6,18 @@ import android.content.SharedPreferences
 import android.widget.Toast
 import com.example.neighborsis.retrofit2.Constants.PushConstants
 
-class Sharedpref(string: String) : Activity() {
+class Sharedpref  {
     var sharedPref: SharedPreferences? = null
     var context: Context? = null
-    var string = string
+    var string :String? =null
 
-    init {
-        sharedPref = this.getSharedPreferences(string, Context.MODE_PRIVATE)
+//    sharedPref = this.getSharedPreferences(string, Context.MODE_PRIVATE)
+    constructor(string: String,context: Context) {
+        this.string=string
+        this.context=context
+    sharedPref=context!!.getSharedPreferences(string,Context.MODE_PRIVATE)
     }
+
 
     //토스트생성
     fun makeToast(context: Context) {
@@ -26,15 +30,15 @@ class Sharedpref(string: String) : Activity() {
 
     //sharedPreference에 저장
     fun save(string: String, boolean: Boolean) {
-        sharedPref?.edit()!!.putBoolean(string, boolean)
-        sharedPref?.edit().apply {
 
-        }
+       val sharedPrefEditer =sharedPref!!.edit()
+        sharedPrefEditer.putBoolean(string, boolean)
+        sharedPrefEditer.apply()
     }
 
     //저장된 값 불러오기
     fun getPrefBool(string: String): Boolean {
 
-        return sharedPref?.getBoolean(string, false)!!
+        return sharedPref!!.getBoolean(string, false)
     }
 }

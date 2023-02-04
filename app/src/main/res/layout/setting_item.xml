@@ -52,6 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginEnd="10dp"
+                    android:gravity="right"
                     android:text=""
                     android:fontFamily="@font/nns_brg_font"
                     android:textColor="@color/black" />

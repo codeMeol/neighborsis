@@ -11,6 +11,6 @@ class PushConstants {
         //푸시 알림 수신자 체크를 위한 상태
         const val PUSH_SUBSCRIBED_SYSTEM = "subscribedSystem"
         const val PUSH_SUBSCRIBED_MARKETING = "subscribedMarketing"
-        const val PUSH_SUBSCRIBED_NONE: String = "subscribedNone"
+        const val PUSH_SUBSCRIBED_INITIALIZING: String = "subscribedIsDone"
     }
 }
