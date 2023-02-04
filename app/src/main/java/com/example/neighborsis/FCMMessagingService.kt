@@ -141,7 +141,7 @@ class FCMMessagingService() : FirebaseMessagingService() {
     fun deleteTopic(topic: String){
         Firebase.messaging.unsubscribeFromTopic("$topic")
             .addOnCompleteListener { task ->
-                var msg = "unSbuscribed"
+                var msg = "unSubscribed"
                 if(!task.isSuccessful){
                     msg = "unSubscribed is failed"
                 }

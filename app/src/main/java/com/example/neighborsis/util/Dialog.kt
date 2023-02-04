@@ -37,7 +37,7 @@ class PopupDialog(context: Context,val finishApp: ()->Unit) : Dialog(context) {
         // OK Button 클릭에 대한 Callback 처리. 이 부분은 상황에 따라 자유롭게!
 
         dialogButtonOk.setOnClickListener {
-            finishApp()
+            System.exit(0)
         }
         dialogButtonCancel.setOnClickListener {
             this@PopupDialog.dismiss()

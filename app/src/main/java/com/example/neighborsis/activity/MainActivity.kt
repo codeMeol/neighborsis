@@ -2,21 +2,24 @@ package com.example.neighborsis.activity
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
+import android.view.View.OnScrollChangeListener
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.example.neighborsis.FCMMessagingService
 import com.example.neighborsis.R
 import com.example.neighborsis.SharedPreferenceClass.Sharedpref
+import com.example.neighborsis.WebView.CustomWebView
 import com.example.neighborsis.WebView.WebViewClientClass
 import com.example.neighborsis.WebView.WebviewInterface
 import com.example.neighborsis.adapter.SettingAdapter
@@ -36,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private var sharedPref: Sharedpref? = null
     var isAdmin: Boolean = false
     var mSettingList :ListView? =null
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
@@ -102,6 +106,30 @@ class MainActivity : AppCompatActivity() {
         verifyStoragePermissions(this)
 
         webView!!.webViewClient = webviewclass
+        val webViewScrollListener = object : CustomWebView.WebViewScrollListener,
+            OnScrollChangeListener {
+            var params = binding.viewFlipper.layoutParams as LinearLayout.LayoutParams
+            override fun scrollDown() {
+                params.weight = 10f
+                binding.bottomBtnLayout.visibility = View.GONE
+            }
+
+            override fun scrollUp() {
+                params.weight = 9.2f
+                binding.bottomBtnLayout.visibility = View.VISIBLE
+            }
+
+            override fun onScrollChange(view: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
+                Log.d("준영테스트","$scrollX  $scrollY   $oldScrollX   $oldScrollY")
+                if(scrollY>oldScrollY){
+                    scrollDown()
+                }
+                else if(scrollY<oldScrollY){
+                    scrollUp()
+                }
+            }
+        }
+        webView!!.setOnScrollChangeListener(webViewScrollListener)
         webView!!.loadUrl(intentLinkURL)
         webView!!.addJavascriptInterface(webviewInterface, "Native")
 
@@ -170,7 +198,7 @@ class MainActivity : AppCompatActivity() {
                     else "미동의"
                 modeDrawable = getDrawable(R.drawable.sending_mail)
                 modeExStr = "푸시알림 동의 정보"
-                value = "푸시 $pushInfo \n이벤트알림 $marketingInfo"
+                value = "푸시 $pushInfo\n이벤트알림 $marketingInfo"
 
             }
 
