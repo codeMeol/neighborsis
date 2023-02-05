@@ -16,12 +16,7 @@ class PopupDialog(context: Context,val finishApp: ()->Unit) : Dialog(context) {
         binding = DialogLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        var request = AdManagerAdRequest.Builder().build()
-        binding.adView.setAdSize(AdSize.MEDIUM_RECTANGLE)
-        binding.adView.adUnitId = "/6499/example/MEDIUM_RECTANGLE"
-
-        binding.adView.loadAd(request)
-
+//        binding.myTemplate.
         initViews()
 
     }

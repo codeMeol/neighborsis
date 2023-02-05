@@ -28,7 +28,9 @@ import com.example.neighborsis.dataclass.SettingModel
 import com.example.neighborsis.retrofit2.Constants.PushConstants
 import com.example.neighborsis.util.PopupDialog
 import com.example.neighborsis.util.PushCheckDialog
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdOptions
 
 
 class MainActivity : AppCompatActivity() {
@@ -39,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     private var sharedPref: Sharedpref? = null
     var isAdmin: Boolean = false
     var mSettingList :ListView? =null
+    lateinit var  adLoader :AdLoader
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,7 +105,27 @@ class MainActivity : AppCompatActivity() {
         mSettingList!!.onItemClickListener = mItemClickListener
 
         MobileAds.initialize(this)
+        adLoader =  AdLoader.Builder(this, "ca-app-pub-3940256099942544/2247696110")
+            .forNativeAd {
+                if (adLoader.isLoading) {
+
+                } else {
+
+                }
+            }
+            .withAdListener(object : AdListener() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    // Handle the failure by logging, altering the UI, and so on.
+                }
+            })
+            .withNativeAdOptions(
+                NativeAdOptions.Builder()
+                // Methods in the NativeAdOptions.Builder class can be
+                // used here to specify individual options settings.
+                .build()).build()
+
         Log.d("준영테스트", "${intentLinkURL}")
+        adLoader.loadAd(AdRequest.Builder().build())
         verifyStoragePermissions(this)
 
         webView!!.webViewClient = webviewclass
