@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     private var sharedPref: Sharedpref? = null
     var isAdmin: Boolean = false
     var mSettingList :ListView? =null
+    private var CancelPopUp: PopupDialog? = null
     lateinit var  adLoader :AdLoader
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         webViewBtn = binding.webViewBtn
         settingBtn = binding.settingBtn
         mViewFlipper = binding.viewFlipper
+        val settingBackBtn:ImageView
         val pushDialog = PushCheckDialog()
         var FLIPPERCOUNT = 0
         val extras = intent.extras
@@ -62,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             webViewClient = WebViewClient()
             settings.javaScriptEnabled = true
         }
-
+        CancelPopUp = PopupDialog(this, finishApp = { finish() })
         sharedPref = Sharedpref(this.getString(R.string.pushOkLevel), this)
         Log.d(
             "준영테스트",
@@ -75,9 +77,6 @@ class MainActivity : AppCompatActivity() {
                 supportFragmentManager, "pushDialog"
             )
         }
-
-
-
 
         intentLinkURL = if (extras?.getString("linkURL") == null) {
             "https://dunni.co.kr/"
@@ -99,33 +98,44 @@ class MainActivity : AppCompatActivity() {
                 this.startActivity(intent)
             }
         }
-
+        settingBackBtn = binding.adminPushLayout.findViewById<ImageView>(R.id.setting_back_btn)
+        settingBackBtn.setOnClickListener { it ->
+            if (FLIPPERCOUNT == 1) {
+                FLIPPERCOUNT -= 1
+                mViewFlipper?.showPrevious()
+            }
+        }
         mSettingList = binding.adminPushLayout.findViewById<ListView>(R.id.item_list)
         mSettingList!!.adapter = mSettingAdapter
         mSettingList!!.onItemClickListener = mItemClickListener
 
         MobileAds.initialize(this)
         adLoader =  AdLoader.Builder(this, "ca-app-pub-3940256099942544/2247696110")
-            .forNativeAd {
+            .forNativeAd { it ->
                 if (adLoader.isLoading) {
-
+                    //처음에 아마 생성 해주긴 했는데 혹시 몰라서 null 체크
+                    if(CancelPopUp?.binding!=null) {
+                        Log.d("준영텟트", "로그 널 아님")
+                        CancelPopUp!!.binding!!.myTemplate.setNativeAd(it)
+                    }
+                    else {
+                        Log.d("준영텟트", "로그 널임")
+                    }
                 } else {
-
+                    Log.d("준영텟트", "loading x")
                 }
-            }
-            .withAdListener(object : AdListener() {
+            }.withAdListener(object : AdListener() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     // Handle the failure by logging, altering the UI, and so on.
                 }
-            })
-            .withNativeAdOptions(
+            }).withNativeAdOptions(
                 NativeAdOptions.Builder()
                 // Methods in the NativeAdOptions.Builder class can be
                 // used here to specify individual options settings.
                 .build()).build()
 
         Log.d("준영테스트", "${intentLinkURL}")
-        adLoader.loadAd(AdRequest.Builder().build())
+
         verifyStoragePermissions(this)
 
         webView!!.webViewClient = webviewclass
@@ -156,18 +166,17 @@ class MainActivity : AppCompatActivity() {
         webView!!.loadUrl(intentLinkURL)
         webView!!.addJavascriptInterface(webviewInterface, "Native")
 
-        webViewBtn?.setOnClickListener { it ->
+        webViewBtn?.setOnClickListener {
             if (FLIPPERCOUNT == 1) {
                 FLIPPERCOUNT -= 1
                 mViewFlipper?.showPrevious()
             }
         }
 
-        settingBtn?.setOnClickListener { it ->
+        settingBtn?.setOnClickListener {
             if (FLIPPERCOUNT == 0) {
                 FLIPPERCOUNT += 1
                 mViewFlipper?.showNext()
-
             }
         }
 
@@ -182,8 +191,8 @@ class MainActivity : AppCompatActivity() {
         if (webView?.canGoBack()!!) {
             webView?.goBack()
         } else {
-            var CancelPopUp: PopupDialog = PopupDialog(this, finishApp = { finish() })
-            CancelPopUp.show()
+            adLoader.loadAd(AdRequest.Builder().build())
+            CancelPopUp!!.show()
         }
     }
 

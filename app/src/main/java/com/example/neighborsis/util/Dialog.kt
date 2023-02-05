@@ -10,7 +10,7 @@ import com.google.android.gms.ads.*
 import com.google.android.gms.ads.admanager.AdManagerAdRequest
 
 class PopupDialog(context: Context,val finishApp: ()->Unit) : Dialog(context) {
-    private lateinit var binding: DialogLayoutBinding
+     lateinit var binding: DialogLayoutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = DialogLayoutBinding.inflate(layoutInflater)

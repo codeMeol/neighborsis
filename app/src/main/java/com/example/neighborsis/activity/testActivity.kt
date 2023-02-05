@@ -40,6 +40,8 @@ class testActivity : AppCompatActivity() {
                 fcm.deleteTopic(PushConstants.PUSH_SUBSCRIBED_SYSTEM)
             }
         })
-
+        binding.sharedBackBtn.setOnClickListener {
+            finish()
+        }
     }
 }
