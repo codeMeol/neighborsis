@@ -40,10 +40,11 @@ class MainActivity : AppCompatActivity() {
     var mViewFlipper: ViewFlipper? = null
     private var sharedPref: Sharedpref? = null
     var isAdmin: Boolean = false
-    var userId=""
-    var mSettingList :ListView? =null
+    var userId = ""
+    var mSettingList: ListView? = null
     private var CancelPopUp: PopupDialog? = null
-    lateinit var  adLoader :AdLoader
+    lateinit var adLoader: AdLoader
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         webViewBtn = binding.webViewBtn
         settingBtn = binding.settingBtn
         mViewFlipper = binding.viewFlipper
-        val settingBackBtn:ImageView
+        val settingBackBtn: ImageView
         val pushDialog = PushCheckDialog()
         var FLIPPERCOUNT = 0
         val extras = intent.extras
@@ -112,19 +113,15 @@ class MainActivity : AppCompatActivity() {
         mSettingList!!.onItemClickListener = mItemClickListener
 
         MobileAds.initialize(this)
-        adLoader =  AdLoader.Builder(this, "ca-app-pub-3940256099942544/2247696110")
+        adLoader = AdLoader.Builder(this, "ca-app-pub-3940256099942544/2247696110")
             .forNativeAd { it ->
                 if (adLoader.isLoading) {
                     //처음에 아마 생성 해주긴 했는데 혹시 몰라서 null 체크
-                    if(CancelPopUp?.binding!=null) {
-                        Log.d("준영텟트", "로그 널 아님")
+                    if (CancelPopUp?.binding != null) {
                         CancelPopUp!!.binding!!.myTemplate.setNativeAd(it)
-                    }
-                    else {
-                        Log.d("준영텟트", "로그 널임")
+                    } else {
                     }
                 } else {
-                    Log.d("준영텟트", "loading x")
                 }
             }.withAdListener(object : AdListener() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
@@ -132,13 +129,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }).withNativeAdOptions(
                 NativeAdOptions.Builder()
-                // Methods in the NativeAdOptions.Builder class can be
-                // used here to specify individual options settings.
-                .build()).build()
-
-        Log.d("준영테스트", "${intentLinkURL}")
-
-        verifyStoragePermissions(this)
+                    // Methods in the NativeAdOptions.Builder class can be
+                    // used here to specify individual options settings.
+                    .build()
+            ).build()
 
         webView!!.webViewClient = webviewclass
         val webViewScrollListener = object : CustomWebView.WebViewScrollListener,
@@ -154,12 +148,16 @@ class MainActivity : AppCompatActivity() {
                 binding.bottomBtnLayout.visibility = View.VISIBLE
             }
 
-            override fun onScrollChange(view: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
-                Log.d("준영테스트","$scrollX  $scrollY   $oldScrollX   $oldScrollY")
-                if(scrollY>oldScrollY){
+            override fun onScrollChange(
+                view: View?,
+                scrollX: Int,
+                scrollY: Int,
+                oldScrollX: Int,
+                oldScrollY: Int
+            ) {
+                if (scrollY > oldScrollY) {
                     scrollDown()
-                }
-                else if(scrollY<oldScrollY){
+                } else if (scrollY < oldScrollY) {
                     scrollUp()
                 }
             }
@@ -180,13 +178,12 @@ class MainActivity : AppCompatActivity() {
                 FLIPPERCOUNT += 1
                 mViewFlipper?.showNext()
                 webView!!.evaluateJavascript(
-                "document.querySelector('.xans-member-var-name').innerText"
+                    "document.querySelector('.xans-member-var-name').innerText"
                 ) {
                     // value will contain the text content of the element
-                    val t=if(!it.equals("null"))it.toString() else "로그인이 필요합니다."
-                    Log.d("준영테스트","element is = $t")
-                    userId=t
-                    mSettingList!!.adapter = SettingAdapter( getSettingModelList(isAdmin,userId))
+                    val t = if (!it.equals("null")) it.toString() else "로그인이 필요합니다."
+                    userId = t
+                    mSettingList!!.adapter = SettingAdapter(getSettingModelList(isAdmin, userId))
                 }
             }
         }
@@ -196,7 +193,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        mSettingList!!.adapter = SettingAdapter( getSettingModelList(isAdmin,userId))
+        mSettingList!!.adapter = SettingAdapter(getSettingModelList(isAdmin, userId))
     }
 
     override fun onBackPressed() {
@@ -212,7 +209,6 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        Log.d("준영테스트", "${resultCode}= resultCode , ${requestCode} = requestCode , ${data} = data")
 
         val message = data?.getStringExtra("linkUrl").toString()
 
@@ -238,13 +234,13 @@ class MainActivity : AppCompatActivity() {
                     if (sharedPref!!.getPrefBool(PushConstants.PUSH_SUBSCRIBED_SYSTEM)) "동의"
                     else "미동의"
                 var marketingInfo: String =
-                    if(sharedPref!!.getPrefBool(PushConstants.PUSH_SUBSCRIBED_MARKETING)) "동의"
+                    if (sharedPref!!.getPrefBool(PushConstants.PUSH_SUBSCRIBED_MARKETING)) "동의"
                     else "미동의"
                 modeDrawable = getDrawable(R.drawable.sending_mail)
                 modeExStr = "푸시알림 동의 정보"
                 value = "푸시 $pushInfo\n이벤트알림 $marketingInfo"
 
-            } else if(cnt == 1){
+            } else if (cnt == 1) {
 
             }
 
@@ -254,30 +250,7 @@ class MainActivity : AppCompatActivity() {
             resultList.add(settingItem)
 
         }
-        Log.d("준영테스트", "cnt = $cnt, result =$resultList")
         return resultList
     }
 
-
-    fun verifyStoragePermissions(activity: Activity?) {
-        val REQUEST_EXTERNAL_STORAGE = 1
-        val PERMISSIONS_STORAGE = arrayOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
-        // Check if we have write permission
-        val permission =
-            ActivityCompat.checkSelfPermission(
-                activity!!,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(
-                activity,
-                PERMISSIONS_STORAGE,
-                REQUEST_EXTERNAL_STORAGE
-            )
-        }
-    }
 }

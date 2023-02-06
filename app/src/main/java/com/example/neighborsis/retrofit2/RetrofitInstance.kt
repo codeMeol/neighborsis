@@ -1,10 +1,7 @@
 package com.example.neighborsis.retrofit2
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.example.neighborsis.retrofit2.Constants.PushConstants.Companion.BASE_URL
 import com.example.neighborsis.retrofit2.RetrofitInterface.NotificationAPI
-import com.example.neighborsis.util.Pkce
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

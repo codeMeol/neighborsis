@@ -32,8 +32,6 @@ class PushCheckDialog : DialogFragment() {
                         sharedpref.save(PushConstants.PUSH_SUBSCRIBED_SYSTEM,false)
                         fcm.deleteTopic(PushConstants.PUSH_SUBSCRIBED_MARKETING)
                         fcm.deleteTopic(PushConstants.PUSH_SUBSCRIBED_SYSTEM)
-                        Log.d("준영테스트","Marketing = ${sharedpref.getPrefBool(PushConstants.PUSH_SUBSCRIBED_MARKETING)}" +
-                                "System = ${sharedpref.getPrefBool(PushConstants.PUSH_SUBSCRIBED_SYSTEM)} ")
                     })
                 .setPositiveButton("동의",
                     DialogInterface.OnClickListener { dialog, id ->
@@ -42,8 +40,6 @@ class PushCheckDialog : DialogFragment() {
                         sharedpref!!.save(PushConstants.PUSH_SUBSCRIBED_SYSTEM,true)
                         fcm.addTopic(PushConstants.PUSH_SUBSCRIBED_MARKETING)
                         fcm.addTopic((PushConstants.PUSH_SUBSCRIBED_SYSTEM))
-                        Log.d("준영테스트","Marketing = ${sharedpref.getPrefBool(PushConstants.PUSH_SUBSCRIBED_MARKETING)}" +
-                                "System = ${sharedpref.getPrefBool(PushConstants.PUSH_SUBSCRIBED_SYSTEM)} ")
                     })
                 .setIcon(R.drawable.dunny_icon)
                 .setTitle("푸시알림 동의 받기")

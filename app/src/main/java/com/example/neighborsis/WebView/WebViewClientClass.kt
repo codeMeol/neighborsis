@@ -13,14 +13,11 @@ class WebViewClientClass(context: Context) : WebViewClient() {
     val context = context
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
         return if (url.startsWith(INTENT_PROTOCOL_START)) {
-            val customUrlStartIndex = INTENT_PROTOCOL_START.length
             val customUrlEndIndex = url.indexOf(INTENT_PROTOCOL_INTENT)
 
             if (customUrlEndIndex < 0) {
                 false
             } else {
-                val customUrl = url.substring(customUrlStartIndex, customUrlEndIndex)
-                Log.d("준영테스트", "커스텀 url = $customUrl")
                 try {
                     val intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
                     val existPackage: Intent? =
@@ -30,8 +27,7 @@ class WebViewClientClass(context: Context) : WebViewClient() {
                         context.startActivity(intent)
                     }
                 } catch (e: ActivityNotFoundException) {
-                    val packageStartIndex = customUrlEndIndex + INTENT_PROTOCOL_INTENT.length
-                    val packageEndIndex = url.indexOf(INTENT_PROTOCOL_END)
+
                     val packageName = "com.kakao.talk"
 
                     context.startActivity(

@@ -43,13 +43,11 @@ class FCMMessagingService() : FirebaseMessagingService() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        Log.d("준영테스트", "onMessageReceived: ${remoteMessage}")
         super.onMessageReceived(remoteMessage)
         var remoteMessageType: Boolean = remoteMessage.notification != null
         createNotification(remoteMessageType, remoteMessage)
 
         if (remoteMessage.data.isNotEmpty()) {
-            Log.d("준영테스트", "Message data payload: ${remoteMessage.data}")
             if (/* Check if data needs to be processed by long running job */ true) {
                 createNotification(remoteMessageType, remoteMessage)
             } else {
@@ -73,7 +71,6 @@ class FCMMessagingService() : FirebaseMessagingService() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun createNotification(remoteMessageType: Boolean, remoteMessage: RemoteMessage) {
-        Log.d("준영테스트","remoteMessageType = ${remoteMessageType} remoteMessage = $${remoteMessage.data} remoteMessage = ${remoteMessage.from}")
 
 
             val messagebody =
@@ -88,7 +85,6 @@ class FCMMessagingService() : FirebaseMessagingService() {
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra("linkURL",remoteMessage.data.get("link"))
             url=remoteMessage.data.get("link")
-        Log.d("준영테스트fcm","${url}")
              intent.flags = Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
 
             val pendingIntent =PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE)
@@ -110,7 +106,6 @@ class FCMMessagingService() : FirebaseMessagingService() {
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 // Create channel to show notifications.
-                Log.d("준영테스트", "Create channel to show notifications.  ${remoteMessage}")
 
                 notificationManager!!.createNotificationChannel(
                     NotificationChannel(

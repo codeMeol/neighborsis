@@ -9,7 +9,6 @@ class WebviewInterface (private val mContext: Context) {
 
     @JavascriptInterface
     fun showMessage() {
-        Log.d("준영테스트","webview 통신 성공 ")
     }
 
 
