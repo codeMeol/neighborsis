@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnScrollChangeListener
+import android.webkit.ValueCallback
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.*
@@ -29,7 +30,6 @@ import com.example.neighborsis.retrofit2.Constants.PushConstants
 import com.example.neighborsis.util.PopupDialog
 import com.example.neighborsis.util.PushCheckDialog
 import com.google.android.gms.ads.*
-import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 
 
@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
     var mViewFlipper: ViewFlipper? = null
     private var sharedPref: Sharedpref? = null
     var isAdmin: Boolean = false
+    var userId=""
     var mSettingList :ListView? =null
     private var CancelPopUp: PopupDialog? = null
     lateinit var  adLoader :AdLoader
@@ -57,6 +58,7 @@ class MainActivity : AppCompatActivity() {
         var FLIPPERCOUNT = 0
         val extras = intent.extras
         var intentLinkURL = ""
+
         var mSettingAdapter: SettingAdapter?
         val webviewclass = WebViewClientClass(this)
         val webviewInterface = WebviewInterface(this)
@@ -177,14 +179,24 @@ class MainActivity : AppCompatActivity() {
             if (FLIPPERCOUNT == 0) {
                 FLIPPERCOUNT += 1
                 mViewFlipper?.showNext()
+                webView!!.evaluateJavascript(
+                "document.querySelector('.xans-member-var-name').innerText"
+                ) {
+                    // value will contain the text content of the element
+                    val t=if(!it.equals("null"))it.toString() else "로그인이 필요합니다."
+                    Log.d("준영테스트","element is = $t")
+                    userId=t
+                    mSettingList!!.adapter = SettingAdapter( getSettingModelList(isAdmin,userId))
+                }
             }
         }
+
 
     }
 
     override fun onResume() {
         super.onResume()
-        mSettingList!!.adapter = SettingAdapter( getSettingModelList(isAdmin,"userId"))
+        mSettingList!!.adapter = SettingAdapter( getSettingModelList(isAdmin,userId))
     }
 
     override fun onBackPressed() {
@@ -231,6 +243,8 @@ class MainActivity : AppCompatActivity() {
                 modeDrawable = getDrawable(R.drawable.sending_mail)
                 modeExStr = "푸시알림 동의 정보"
                 value = "푸시 $pushInfo\n이벤트알림 $marketingInfo"
+
+            } else if(cnt == 1){
 
             }
 

@@ -57,11 +57,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.PushCheckActivity"
-            android:exported="true">
 
-        </activity>
 <activity android:name=".activity.testActivity"/>
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
