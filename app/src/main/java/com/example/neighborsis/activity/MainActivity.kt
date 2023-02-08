@@ -113,15 +113,18 @@ class MainActivity : AppCompatActivity() {
         mSettingList!!.onItemClickListener = mItemClickListener
 
         MobileAds.initialize(this)
-        adLoader = AdLoader.Builder(this, "ca-app-pub-3940256099942544/2247696110")
+        adLoader = AdLoader.Builder(this, "ca-app-pub-7026697123525361~7498000467")
             .forNativeAd { it ->
                 if (adLoader.isLoading) {
+
+
+                } else {
                     //처음에 아마 생성 해주긴 했는데 혹시 몰라서 null 체크
                     if (CancelPopUp?.binding != null) {
                         CancelPopUp!!.binding!!.myTemplate.setNativeAd(it)
                     } else {
+
                     }
-                } else {
                 }
             }.withAdListener(object : AdListener() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
