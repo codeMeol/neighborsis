@@ -7,6 +7,7 @@ import android.util.Log
 import com.example.neighborsis.databinding.ActivityAdminPushForFirebaseBinding
 import com.example.neighborsis.dataclass.NotificationData
 import com.example.neighborsis.dataclass.message
+import com.example.neighborsis.retrofit2.Constants.PushConstants
 import com.example.neighborsis.retrofit2.RetrofitInstance
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
@@ -43,7 +44,7 @@ class AdminPushForFirebaseActivity : AppCompatActivity() {
             val  pushBody= pushForFirebaseBodyEdittext.text.toString() //메시지 =타이틀
             val pushLink =pushForFirebaseLinkEdittext.text.toString() //링크 =링크
             val recipientToken = myToken   /////내 토큰
-            val topic = "/topics/weather"
+            val topic = "/topics/${PushConstants.PUSH_SUBSCRIBED_MARKETING}"
 
             if(pushTitle.isNotEmpty() && pushLink.isNotEmpty() && recipientToken.isNotEmpty()) {
                 message(

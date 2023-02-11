@@ -186,7 +186,7 @@ class MainActivity : AppCompatActivity() {
                     // value will contain the text content of the element
                     val t = if (!it.equals("null")) it.toString() else "로그인이 필요합니다."
                     userId = t
-                    mSettingList!!.adapter = SettingAdapter(getSettingModelList(isAdmin, userId))
+                    mSettingList!!.adapter = SettingAdapter(getSettingModelList(true, userId))
                 }
             }
         }
