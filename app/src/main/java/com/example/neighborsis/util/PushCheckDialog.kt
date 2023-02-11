@@ -32,6 +32,14 @@ class PushCheckDialog : DialogFragment() {
                         sharedpref.save(PushConstants.PUSH_SUBSCRIBED_SYSTEM,false)
                         fcm.deleteTopic(PushConstants.PUSH_SUBSCRIBED_MARKETING)
                         fcm.deleteTopic(PushConstants.PUSH_SUBSCRIBED_SYSTEM)
+                        val builder = AlertDialog.Builder(context)
+                        builder.setTitle("푸시 메시지 동의 여부 알림")
+                        builder.setMessage(resources.getString(R.string.pushDisAgreeAlertMessage))
+                        builder.setPositiveButton("OK") { dialog, which ->
+                            // do something when the "OK" button is clicked
+                        }
+                        val dialog = builder.create()
+                        dialog.show()
                     })
                 .setPositiveButton("동의",
                     DialogInterface.OnClickListener { dialog, id ->
@@ -40,6 +48,14 @@ class PushCheckDialog : DialogFragment() {
                         sharedpref!!.save(PushConstants.PUSH_SUBSCRIBED_SYSTEM,true)
                         fcm.addTopic(PushConstants.PUSH_SUBSCRIBED_MARKETING)
                         fcm.addTopic((PushConstants.PUSH_SUBSCRIBED_SYSTEM))
+                        val builder = AlertDialog.Builder(context)
+                        builder.setTitle("푸시 메시지 동의 여부 알림")
+                        builder.setMessage(resources.getString(R.string.pushAgreeAlertMessage))
+                        builder.setPositiveButton("OK") { dialog, which ->
+                            // do something when the "OK" button is clicked
+                        }
+                        val dialog = builder.create()
+                        dialog.show()
                     })
                 .setIcon(R.drawable.dunny_icon)
                 .setTitle("푸시알림 동의 받기")
