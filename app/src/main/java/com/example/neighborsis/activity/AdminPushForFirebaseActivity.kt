@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.example.neighborsis.R
 import com.example.neighborsis.databinding.ActivityAdminPushForFirebaseBinding
 import com.example.neighborsis.dataclass.NotificationData
 import com.example.neighborsis.dataclass.message
@@ -19,13 +20,17 @@ import kotlinx.coroutines.launch
 class AdminPushForFirebaseActivity : AppCompatActivity() {
     val TAG = "AdminPushForFirebaseActivity"
     var myToken : String = ""
+    private var bringURL :String? =""
     @SuppressLint("LongLogTag")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         var binding = ActivityAdminPushForFirebaseBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        var intent=intent.extras
 
+        Log.d("준영테스트","${intent!!.get(resources.getString(R.string.webViewLinkUrl))}")
+        bringURL=intent!!.get(resources.getString(R.string.webViewLinkUrl)).toString()
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Log.w(TAG, "Fetching FCM registration token failed", task.exception)
@@ -55,7 +60,11 @@ class AdminPushForFirebaseActivity : AppCompatActivity() {
                 }
             }
 
-        }}
+        }
+        backBtn.setOnClickListener {
+            pushForFirebaseLinkEdittext.setText(bringURL)
+          }
+        }
         pushBtn()
     }
 

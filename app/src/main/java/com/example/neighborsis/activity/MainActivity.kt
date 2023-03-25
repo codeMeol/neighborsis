@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
     var mSettingList: ListView? = null
     private var CancelPopUp: PopupDialog? = null
     lateinit var adLoader: AdLoader
+    var extras: Bundle? = null
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,12 +58,16 @@ class MainActivity : AppCompatActivity() {
         val settingBackBtn: ImageView
         val pushDialog = PushCheckDialog()
         var FLIPPERCOUNT = 0
-        val extras = intent.extras
+
+
         var intentLinkURL = ""
 
         var mSettingAdapter: SettingAdapter?
         val webviewclass = WebViewClientClass(this)
         val webviewInterface = WebviewInterface(this)
+        if(intent.extras != null){
+        extras =intent.extras!!
+        }
         webView?.apply {
             webViewClient = WebViewClient()
             settings.javaScriptEnabled = true
@@ -84,7 +89,7 @@ class MainActivity : AppCompatActivity() {
         intentLinkURL = if (extras?.getString("linkURL") == null) {
             "https://dunni.co.kr/"
         } else {
-            extras.getString("linkURL")
+            extras!!.getString("linkURL")
         }!!
         mSettingAdapter = SettingAdapter(getSettingModelList(isAdmin, "userId"))
         val mItemClickListener = OnItemClickListener { parent, view, position, l_position ->
@@ -92,11 +97,14 @@ class MainActivity : AppCompatActivity() {
             val tv = parent.adapter.getItemId(position).toString()
             if (tv.equals("2")) {
                 val intent = Intent(applicationContext, AdminPushForFirebaseActivity::class.java)
+                intent.putExtra(
+                    resources.getString(R.string.webViewLinkUrl),
+                    webView!!.url.toString()
+                )
                 intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                 this.startActivity(intent)
             } else if (tv.equals("1")) {
                 val intent = Intent(applicationContext, testActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                 this.startActivity(intent)
             }
@@ -188,6 +196,7 @@ class MainActivity : AppCompatActivity() {
                     userId = t
                     mSettingList!!.adapter = SettingAdapter(getSettingModelList(true, userId))
                 }
+
             }
         }
 
@@ -202,6 +211,8 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (webView?.canGoBack()!!) {
             webView?.goBack()
+        } else if (extras!!.getString("linkURL") != null) {
+            webView?.loadUrl("https://dunni.co.kr/")
         } else {
             adLoader.loadAd(AdRequest.Builder().build())
             CancelPopUp!!.show()

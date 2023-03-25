@@ -49,7 +49,7 @@
                 android:id="@+id/back_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="뒤로 가기"
+                android:text="링크 가져오기"
                 tools:layout_editor_absoluteX="307dp"
                 tools:layout_editor_absoluteY="452dp"
                 tools:ignore="MissingConstraints" />
